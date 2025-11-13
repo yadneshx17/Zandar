@@ -8,7 +8,7 @@ export const db = new Dexie("bookmarkdb");
  */
 db.version(1).stores({
   pages: "++id, uuid, title, createdAt, updatedAt",
-  widgets: "++id, uuid, pageId, title, collapsed, createdAt, updatedAt",
+  widgets: "++id, uuid, pageId, columnId, title, collapsed, createdAt, updatedAt",
   links: "++id, uuid, widgetId, pageId, name, url, createdAt, updatedAt"
 });
 
