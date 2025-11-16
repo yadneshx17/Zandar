@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import {
-  Plus, Edit2, Trash2, ChevronDown, ChevronRight, Grip, AlertTriangle
+  Plus, 
+  Trash2, 
+  Edit2,
+  ChevronDown, 
+  ChevronRight, 
+  AlertTriangle
 } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 import { db } from "../db";
@@ -8,6 +13,8 @@ import { db } from "../db";
 const Widget = ({ widget, widgets, setWidgets }) => {
   const [showAddLink, setShowAddLink] = useState(false);
   const [editingWidget, setEditingWidget] = useState(false);
+  const [isHovered, setIsHovered] = useState(false); // ADD THIS
+  const [collapsed, setCollapsed] = useState(widget.collapsed);
   
   const [draggedLink, setDraggedLink] = useState(null);
   const [dragOverLink, setDragOverLink] = useState(null);
@@ -47,7 +54,6 @@ const Widget = ({ widget, widgets, setWidgets }) => {
     let url = newLink.url.trim();
     if (!url.startsWith("http")) url = `https://${url}`;
 
-    // Get max order in widget
     const maxOrder = widget.links.length > 0 
       ? Math.max(...widget.links.map(l => l.order || 0))
       : -1;
@@ -126,7 +132,6 @@ const Widget = ({ widget, widgets, setWidgets }) => {
     
     if (!draggedLink || draggedLink.id === targetLink.id) return;
 
-    // Check if moving to same widget (reorder) or different widget (move)
     if (draggedLink.widgetId === targetLink.widgetId) {
       // Reorder within same widget
       const widgetLinks = widget.links.sort((a, b) => (a.order || 0) - (b.order || 0));
@@ -138,7 +143,6 @@ const Widget = ({ widget, widgets, setWidgets }) => {
         const [removed] = reordered.splice(draggedIndex, 1);
         reordered.splice(targetIndex, 0, removed);
         
-        // Update order in database
         const updates = reordered.map((link, index) => 
           db.links.update(link.id, { order: index, updatedAt: now() })
         );
@@ -167,9 +171,8 @@ const Widget = ({ widget, widgets, setWidgets }) => {
   const handleWidgetDrop = async (e) => {
     e.preventDefault();
     
-    if (!draggedLink || dragOverLink) return; // Already handled by link drop
+    if (!draggedLink || dragOverLink) return;
     
-    // Drop at end of widget
     if (draggedLink.widgetId !== widget.id) {
       const maxOrder = widget.links.length > 0 
         ? Math.max(...widget.links.map(l => l.order || 0))
@@ -192,24 +195,24 @@ const Widget = ({ widget, widgets, setWidgets }) => {
     <>
       {/* Confirm Dialog */}
       {confirmDialog.show && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-5 shadow-xl w-80">
-            <div className="flex gap-2 items-center text-red-600 mb-3">
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+          <div className="bg-[#18181b] border border-gray-800 rounded-xl p-6 shadow-2xl w-80">
+            <div className="flex gap-3 items-center text-red-400 mb-4">
               <AlertTriangle size={20} />
-              <b>{confirmDialog.title}</b>
+              <span className="font-semibold text-lg">{confirmDialog.title}</span>
             </div>
-            <p className="text-sm mb-4">{confirmDialog.message}</p>
+            <p className="text-sm text-gray-400 mb-6">{confirmDialog.message}</p>
 
-            <div className="flex justify-end gap-2">
+            <div className="flex justify-end gap-3">
               <button 
                 onClick={closeConfirm} 
-                className="px-3 py-1 text-sm bg-gray-200 rounded hover:bg-gray-300"
+                className="px-4 py-2 text-sm bg-[#27272a] text-gray-300 rounded-lg hover:bg-[#3f3f46] transition-colors"
               >
                 Cancel
               </button>
               <button 
                 onClick={handleConfirm} 
-                className="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700"
+                className="px-4 py-2 text-sm bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium"
               >
                 Confirm
               </button>
@@ -220,17 +223,15 @@ const Widget = ({ widget, widgets, setWidgets }) => {
 
       {/* Widget Container */}
       <div 
-        className="border-2 border-dashed border-gray-300 rounded-xl p-4 bg-white hover:border-gray-400 transition-colors group"
+        className="bg-[#161616] rounded-xl p-5 transition-all font-instrument shadow-[0_4px_15px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.03)]"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
         onDragOver={(e) => e.preventDefault()}
         onDrop={handleWidgetDrop}
       >
         {/* Header */}
-        <div className="flex justify-between mb-3">
+        <div className="flex justify-between items-center mb-4">
           <div className="flex gap-2 items-center flex-1">
-            <button onClick={() => toggleCollapse(widget.id, widget.collapsed)}>
-              {widget.collapsed ? <ChevronRight size={16}/> : <ChevronDown size={16}/>}
-            </button>
-
             {editingWidget ? (
               <input
                 value={widget.title}
@@ -260,32 +261,48 @@ const Widget = ({ widget, widgets, setWidgets }) => {
                   }
                 }}
                 autoFocus
-                className="text-sm border border-gray-300 px-2 py-1 rounded flex-1 focus:outline-none focus:border-gray-400"
+                className="flex-1 mr-6 bg-[#27272a] text-white text-base font-medium px-3 py-1.5 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#767676]/50"
               />
             ) : (
-              <h3 className="text-sm font-semibold">{widget.title}</h3>
+              <button 
+                onClick={() => toggleCollapse(widget.id, widget.collapsed)}
+                className="flex items-center gap-2 flex-1 text-left group/title"
+              >
+                <h3 
+                  className="text-base font-medium text-white group-hover/title:text-gray-200"
+                  onDoubleClick={() => setEditingWidget(true)}
+                >
+                  {widget.title}
+                </h3>
+                <ChevronDown 
+                  size={18} 
+                  className={`opacity-0 transition-transform ${widget.collapsed ? '-rotate-90 text-gray-400 opacity-100' : '+rotate-90 text-gray-400 opacity-100'}`}
+                />
+              </button>
             )}
           </div>
 
-          <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition">
+          {/* Widget Actions - USE isHovered STATE */}
+          <div className={`flex gap-1 transition-opacity duration-200 ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
             <button 
               onClick={() => setEditingWidget(true)}
-              className="hover:bg-gray-100 p-1 rounded"
+              className="text-gray-400 hover:text-white hover:bg-[#27272a] p-1.5 rounded transition-colors"
             >
               <Edit2 size={14}/>
             </button>
             <button 
               onClick={() => deleteWidget(widget.id)}
-              className="hover:bg-gray-100 p-1 rounded"
+              className="text-gray-400 hover:text-red-400 hover:bg-[#27272a] p-1.5 rounded transition-colors"
             >
               <Trash2 size={14}/>
             </button>
           </div>
+
         </div>
 
         {/* Widget Content */}
         {!widget.collapsed && (
-          <div className="space-y-1">
+          <div className="">
             {sortedLinks.map((l) => {
               const isDragging = draggedLink?.id === l.id;
               const isDropTarget = dragOverLink === l.id;
@@ -299,29 +316,29 @@ const Widget = ({ widget, widgets, setWidgets }) => {
                   onDragOver={(e) => handleLinkDragOver(e, l)}
                   onDrop={(e) => handleLinkDrop(e, l)}
                   className={`
-                    group/link flex items-center gap-2 px-2 py-1.5 rounded 
-                    hover:bg-gray-50 cursor-move transition-all duration-150
+                    group/link flex items-center gap-3 my-1 rounded-lg
+                    hover:text-gray-200 cursor-move transition-all
                     ${isDragging ? 'opacity-30 scale-95' : 'opacity-100 scale-100'}
-                    ${isDropTarget ? 'bg-cyan-50 border-l-2 border-cyan-500' : ''}
+                    ${isDropTarget ? 'bg-[#27272a]' : ''}
                   `}
                 >
-                  <Grip size={14} className="text-gray-400 opacity-0 group-hover/link:opacity-100"/>
                   <img
                     src={`https://www.google.com/s2/favicons?domain=${l.url}&sz=32`}
-                    className="w-4 h-4"
+                    className="w-4 h-4 flex-shrink-0"
+                    alt=""
                     onError={(e) => (e.target.style.display = "none")}
                   />
                   <a 
                     href={l.url} 
                     target="_blank" 
                     rel="noopener noreferrer" 
-                    className="flex-1 text-sm truncate hover:text-blue-600"
+                    className="flex-1 text-sm text-gray-300 hover:text-white truncate"
                   >
                     {l.name}
                   </a>
                   <button 
                     onClick={() => deleteLink(l.id)}
-                    className="opacity-0 group-hover/link:opacity-100 hover:bg-gray-200 p-1 rounded"
+                    className="opacity-0 group-hover/link:opacity-100 text-gray-500 hover:text-red-400 p-1 rounded transition-all"
                   >
                     <Trash2 size={14}/>
                   </button>
@@ -330,24 +347,24 @@ const Widget = ({ widget, widgets, setWidgets }) => {
             })}
 
             {showAddLink ? (
-              <div className="bg-gray-50 p-2 rounded space-y-2 mt-2">
+              <div className="bg-[#27272a] p-3 rounded-lg space-y-2 mt-2">
                 <input
                   placeholder="Name"
-                  className="w-full border border-gray-300 px-2 py-1 rounded text-sm focus:outline-none focus:border-gray-400"
+                  className="w-full bg-[#18181b] text-white border border-gray-700 px-3 py-2 rounded-lg text-sm focus:outline-none focus:border-gray-600 placeholder-gray-600"
                   value={newLink.name}
                   onChange={(e) => setNewLink({ ...newLink, name: e.target.value })}
                   autoFocus
                 />
                 <input
                   placeholder="URL"
-                  className="w-full border border-gray-300 px-2 py-1 rounded text-sm focus:outline-none focus:border-gray-400"
+                  className="w-full bg-[#18181b] text-white border border-gray-700 px-3 py-2 rounded-lg text-sm focus:outline-none focus:border-gray-600 placeholder-gray-600"
                   value={newLink.url}
                   onChange={(e) => setNewLink({ ...newLink, url: e.target.value })}
                 />
                 <div className="flex gap-2">
                   <button 
                     onClick={() => addLink(widget.id)} 
-                    className="flex-1 bg-black text-white px-3 py-1 rounded text-xs hover:bg-gray-800"
+                    className="flex-1 bg-white text-black px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors"
                   >
                     Add
                   </button>
@@ -356,7 +373,7 @@ const Widget = ({ widget, widgets, setWidgets }) => {
                       setShowAddLink(false); 
                       setNewLink({ name: "", url: "" }); 
                     }}
-                    className="bg-gray-200 text-xs px-3 py-1 rounded hover:bg-gray-300"
+                    className="px-3 py-2 bg-[#18181b] text-gray-400 rounded-lg text-sm hover:bg-[#27272a] hover:text-gray-300 transition-colors"
                   >
                     Cancel
                   </button>
@@ -365,9 +382,9 @@ const Widget = ({ widget, widgets, setWidgets }) => {
             ) : (
               <button 
                 onClick={() => setShowAddLink(true)}
-                className="w-full text-left text-xs text-gray-500 px-2 py-1 rounded hover:bg-gray-100 flex items-center gap-1 mt-1 opacity-0 group-hover:opacity-100"
+                className={`w-full text-left text-xs text-neutral-500 py-2 rounded-lg opacity-0 ${isHovered ? 'opacity-100' : ''} hover:text-white/75 flex items-center gap-2 mt-1 transition-all`}
               > 
-                <Plus size={12}/> Add link
+                <Plus size={14}/> Add link
               </button>
             )}
           </div>

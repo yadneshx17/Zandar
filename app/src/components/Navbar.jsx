@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {
-  PanelRight,
+  ChevronDown,
   X,
   Pencil,
   Plus,
@@ -18,8 +18,8 @@ export default function NavBar({ activeTab, setActiveTab }) {
   const [draggedPage, setDraggedPage] = useState(null);
   const [dragOverIndex, setDragOverIndex] = useState(null);
   
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(false);  
   const [newPageDialog, setNewPageDialog] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [newPage, setNewPage] = useState({ title: "" });
@@ -129,7 +129,7 @@ export default function NavBar({ activeTab, setActiveTab }) {
     const handleEscape = (e) => {
       if (e.key === "Escape") {
         setSearchOpen(false);
-        setSidebarOpen(false);
+        setDropdownOpen(false);
         setNewPageDialog(false);
       }
     };
@@ -139,218 +139,155 @@ export default function NavBar({ activeTab, setActiveTab }) {
 
   return (
     <>
-      <nav className="relative">
-        <div className="border border-black">
-          <div className="flex items-center justify-between my-1">
-            {/* Left side - Pages section */}
-            <div className="flex items-center relative">
+      <nav className="bg-[#161616] font-sans text-white border-b border-gray-800">
+        <div className="flex items-center justify-between h-12 px-4">
+          {/* Left side - Dropdown & Tabs */}
+          <div className="flex items-center gap-4">
+            {/* Dropdown Menu */}
+            <div className="relative">
               <button
-                onClick={() => setSidebarOpen(!sidebarOpen)}
-                className="flex items-center p-1 px-3 mx-2 hover:bg-gray-100 transition-colors rounded-md"
-                aria-label="Toggle sidebar"
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+                className="flex items-center gap-1 transition-colors mx-1 px-2 py-2 rounded-xl shadow-[0_4px_10px_rgba(0,0,0,0.4)] bg-[#2A2A2C]"
+                aria-label="Pages menu"
               >
-                <PanelRight />
+                <ChevronDown size={18} />
               </button>
 
-              {/* Pages Sidebar */}
-              {sidebarOpen && (
+              {/* Dropdown Menu */}
+              {dropdownOpen && (
                 <>
                   <div
                     className="fixed inset-0 z-30"
-                    onClick={() => setSidebarOpen(false)}
-                    aria-hidden="true"
+                    onClick={() => setDropdownOpen(false)}
                   />
 
-                  <div
-                    className="fixed top-16 left-2 w-80 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 shadow-2xl z-40 rounded overflow-hidden"
-                    role="dialog"
-                    aria-label="Pages sidebar"
-                  >
-                    <div className="flex items-center justify-between p-4 border-b border-slate-700">
-                      <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                        Pages
-                      </h2>
+                  <div className="absolute top-full left-0 mt-2 w-64 bg-[#1a1a1a] border border-gray-700 rounded-lg shadow-2xl z-40 overflow-hidden">
+                    <div className="p-2">
+                      <div className="flex items-center justify-between px-2 py-1 mb-1">
+                        <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                          Pages
+                        </span>
+                        <button
+                          onClick={() => {
+                            setDropdownOpen(false);
+                            setNewPageDialog(true);
+                          }}
+                          className="text-gray-400 hover:text-white transition-colors"
+                        >
+                          <Plus size={16} />
+                        </button>
+                      </div>
 
-                      <button
-                        onClick={() => setSidebarOpen(false)}
-                        className="text-gray-400 hover:text-white transition-colors p-1 hover:bg-slate-700 rounded-lg"
-                        aria-label="Close sidebar"
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
-                    </div>
-
-                    <div className="p-3 space-y-3 max-h-96 overflow-y-auto">
-                      <div className="space-y-1">
-                        <div className="flex items-center justify-between px-2">
-                          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                            Your Pages
-                          </p>
+                      {pages.map((page) => (
+                        <div
+                          key={page.id}
+                          className="flex items-center justify-between group/item px-2 py-1.5 rounded hover:bg-gray-800"
+                        >
                           <button
                             onClick={() => {
-                              setSidebarOpen(false);
-                              setNewPageDialog(true);
+                              setActiveTab(page.title);
+                              setDropdownOpen(false);
                             }}
-                            className="text-cyan-400 hover:text-cyan-300 transition-colors"
-                            aria-label="Add new page"
+                            className="flex-1 text-left text-sm text-gray-300 hover:text-white"
                           >
-                            <Plus className="w-4 h-4" />
+                            {page.title}
                           </button>
-                        </div>
 
-                        <div>
-                          {pages.map((page) => (
-                            <div
-                              className="flex items-center justify-between mx-1 group/item"
-                              key={page.id}
+                          <div className="flex items-center gap-1 opacity-0 group-hover/item:opacity-100">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setDeleteConfirm(page);
+                              }}
+                              className="text-gray-500 hover:text-red-400 p-1 rounded transition-colors"
                             >
-                              <button
-                                onClick={() => {
-                                  setActiveTab(page.title);
-                                  setSidebarOpen(false);
-                                }}
-                                className={`w-full flex items-center gap-3 p-2 my-1 rounded-lg transition-all ${
-                                  activeTab === page.title
-                                    ? "bg-cyan-500 text-white shadow-lg shadow-cyan-500/50"
-                                    : "text-gray-300 hover:bg-slate-700"
-                                }`}
-                                aria-label={`Go to ${page.title}`}
-                                aria-current={
-                                  activeTab === page.title ? "page" : undefined
-                                }
-                              >
-                                <div className="flex items-center gap-2">
-                                  <div className="w-2 h-2 rounded-full bg-cyan-400"></div>
-                                  <span className="font-medium text-sm">
-                                    {page.title}
-                                  </span>
-                                </div>
-                              </button>
-
-                              <div className="flex items-center gap-1 opacity-0 group-hover/item:opacity-100 transition-opacity">
-                                <button
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    // TODO: Add edit functionality
-                                  }}
-                                  className="hover:bg-blue-500/20 p-1 rounded transition-colors group/edit"
-                                  aria-label={`Edit ${page.title}`}
-                                >
-                                  <Pencil className="w-4 h-4 text-gray-400 group-hover/edit:text-blue-500 transition-colors" />
-                                </button>
-
-                                <button
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setDeleteConfirm(page);
-                                  }}
-                                  className="hover:bg-red-500/20 p-1 rounded transition-colors group/delete"
-                                  aria-label={`Delete ${page.title}`}
-                                >
-                                  <X className="w-4 h-4 text-gray-400 group-hover/delete:text-red-500 transition-colors" />
-                                </button>
-                              </div>
-                            </div>
-                          ))}
+                              <X size={14} />
+                            </button>
+                          </div>
                         </div>
-                      </div>
-                    </div>
-
-                    <div className="p-3 border-t border-slate-700 bg-slate-900">
-                      <div className="text-center text-sm text-gray-400">
-                        {pages.length} {pages.length === 1 ? 'Page' : 'Pages'}
-                      </div>
+                      ))}
                     </div>
                   </div>
                 </>
               )}
-
-              {/* TABS - Drag & Drop */}
-              <div className="flex items-center space-x-2">
-                {pages.slice(0, 5).map((page, index) => {
-                  const isDragging = draggedPage?.index === index;
-                  const isDropTarget = dragOverIndex === index && draggedPage?.index !== index;
-
-                  return (
-                    <div
-                      key={page.id}
-                      draggable
-                      onDragStart={(e) => handleDragStart(e, page, index)}
-                      onDragEnd={handleDragEnd}
-                      onDragOver={(e) => handleDragOver(e, index)}
-                      onDragLeave={handleDragLeave}
-                      onDrop={(e) => handleDrop(e, index)}
-                      className={`
-                        relative border-2 border-black rounded-lg px-3 py-1 text-sm 
-                        transition-all duration-200 cursor-move
-                        ${activeTab === page.title 
-                          ? "bg-cyan-500 text-white shadow-lg shadow-cyan-500/50" 
-                          : "text-gray-700 hover:bg-cyan-400 hover:text-white"
-                        }
-                        ${isDragging ? 'opacity-30 scale-90' : 'opacity-100 scale-100'}
-                        ${isDropTarget ? 'ring-2 ring-cyan-400 ring-offset-2' : ''}
-                      `}
-                    >
-                      <button
-                        onClick={() => setActiveTab(page.title)}
-                        aria-label={`Switch to ${page.title}`}
-                        className="w-full"
-                      >
-                        {page.title}
-                      </button>
-                    </div>
-                  );
-                })}
-                {pages.length > 5 && (
-                  <span className="text-gray-400 text-sm">+{pages.length - 5} more</span>
-                )}
-              </div>
-
-              <button
-                className="mx-3"
-                onClick={() => setNewPageDialog(true)}
-                aria-label="Add new page"
-              >
-                <Plus className="w-6 h-6 border-2 border-black rounded-full border-dotted hover:bg-emerald-500 transition-colors p-0.5" />
-              </button>
             </div>
 
-            {/* Right side - Search, Edit, Account */}
-            <div className="flex items-center space-x-4 mx-3">
-              <button 
-                onClick={async () => {
-                  if (confirm('Delete ALL data and reset database?')) {
-                    await db.delete();
-                    window.location.reload();
-                  }
-                }}
-                className="bg-red-500 text-white px-3 py-2 rounded text-xs"
+            {/* Tabs */}
+            <div className="flex items-center gap-2">
+              {pages.map((page, index) => {
+                const isDragging = draggedPage?.index === index;
+                const isDropTarget = dragOverIndex === index && draggedPage?.index !== index;
+
+                return (
+                  <div
+                    key={page.id}
+                    draggable
+                    onDragStart={(e) => handleDragStart(e, page, index)}
+                    onDragEnd={handleDragEnd}
+                    onDragOver={(e) => handleDragOver(e, index)}
+                    onDragLeave={handleDragLeave}
+                    onDrop={(e) => handleDrop(e, index)}
+                    className={`
+                      px-5 py-2 rounded-xl cursor-move transition-all duration-200
+                      ${activeTab === page.title 
+                        ? "bg-white text-base text-black font-bold" 
+                        : "bg-[#2A2A2C] text-sm text-white hover:text-white shadow-[0_4px_10px_rgba(0,0,0,0.4)]"
+                      }
+                      ${isDragging ? 'opacity-30 scale-95' : 'opacity-100 scale-100'}
+                      ${isDropTarget ? 'ring-1 ring-gray-600' : ''}
+                    `}
+                  >
+                    <button
+                      onClick={() => setActiveTab(page.title)}
+                      className="w-full"
+                    >
+                      {page.title}
+                    </button>
+                  </div>
+                );
+              })}
+
+              {/* Divider */}
+              <div className="h-4 w-[2px] rounded-full bg-[#2A2A2C]"></div>
+
+              {/* Add Page Button */}
+              <button
+                onClick={() => setNewPageDialog(true)}
+                className="text-white transition-colors shadow-[0_4px_10px_rgba(0,0,0,0.4)] rounded-full bg-[#2A2A2C] p-2"
               >
-                [ Reset DB ]
+                <Plus size={18} />
+              </button>
+            </div>
+          </div>
+
+          {/* Right side - Icons */}
+          <div className="flex items-center gap-4 px-1">
+            <div className="flex items-center gap-2">
+              <button
+                className="text-gray-400 hover:text-white transition-colors p-1.5 rounded hover:bg-gray-800"
+                aria-label="Edit mode"
+              >
+                <Edit3 size={18} />
               </button>
 
               <button
                 onClick={() => setSearchOpen(true)}
-                className="hover:bg-gray-100 p-2 rounded-md transition-colors"
-                aria-label="Open search"
+                className="text-gray-400 hover:text-white transition-colors p-1.5 rounded hover:bg-gray-800"
+                aria-label="Search"
               >
-                <Search className="w-5 h-5 text-gray-700" />
-              </button>
-
-              <button
-                className="hover:bg-gray-100 p-2 rounded-md transition-colors"
-                aria-label="Edit mode"
-              >
-                <Edit3 className="w-5 h-5 text-gray-700" />
-              </button>
-
-              <button
-                className="hover:bg-gray-100 p-2 rounded-md transition-colors"
-                aria-label="Account settings"
-              >
-                <User className="w-5 h-5 text-gray-700" />
+                <Search size={18} />
               </button>
             </div>
+
+            {/* Divider */}
+            <div className="h-4 w-[2px] rounded-full bg-[#2A2A2C]"></div>
+
+            <button
+              className="text-gray-400 hover:text-white transition-colors p-1.5 rounded hover:bg-gray-800"
+              aria-label="Account"
+            >
+              <User size={18} />
+            </button>
           </div>
         </div>
       </nav>
@@ -358,26 +295,24 @@ export default function NavBar({ activeTab, setActiveTab }) {
       {/* Search Modal */}
       {searchOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50"
           onClick={() => setSearchOpen(false)}
-          role="dialog"
-          aria-modal="true"
         >
           <div
-            className="bg-white rounded-lg shadow-2xl w-96 p-6"
+            className="bg-[#1a1a1a] border border-gray-700 rounded-lg shadow-2xl w-[500px] p-4"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center border-b-2 border-gray-300 pb-2">
-              <Search className="w-5 h-5 text-gray-500" />
+            <div className="flex items-center gap-3 pb-3 border-b border-gray-700">
+              <Search className="w-5 h-5 text-gray-400" />
               <input
                 type="text"
                 placeholder="Search..."
                 autoFocus
-                className="ml-3 outline-none text-lg w-full"
+                className="flex-1 bg-transparent text-white outline-none text-lg placeholder-gray-500"
               />
               <button
                 onClick={() => setSearchOpen(false)}
-                className="text-gray-400 hover:text-gray-600 transition-colors"
+                className="text-gray-400 hover:text-white transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -389,59 +324,55 @@ export default function NavBar({ activeTab, setActiveTab }) {
       {/* New Page Dialog */}
       {newPageDialog && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50"
           onClick={() => setNewPageDialog(false)}
-          role="dialog"
-          aria-modal="true"
         >
           <div
-            className="bg-white rounded-lg shadow-2xl w-96 p-6"
+            className="bg-[#1a1a1a] border border-gray-700 rounded-lg shadow-2xl w-96 p-6"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">
+              <h2 className="text-xl font-bold text-white">
                 Create New Page
               </h2>
               <button
                 onClick={() => setNewPageDialog(false)}
-                className="text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-2 rounded-lg transition-colors"
+                className="text-gray-400 hover:text-white transition-colors p-1 hover:bg-gray-800 rounded"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="space-y-5">
+            <div className="space-y-4">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-300 mb-2">
                   Page Title
                 </label>
                 <input
                   type="text"
                   value={newPage.title}
-                  onChange={(e) =>
-                    setNewPage({ title: e.target.value })
-                  }
-                  placeholder="Enter page title (e.g. Work, Personal, etc.)"
+                  onChange={(e) => setNewPage({ title: e.target.value })}
+                  placeholder="Enter page title..."
                   autoFocus
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' && newPage.title.trim()) {
                       addPage();
                     }
                   }}
-                  className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200 transition-all"
+                  className="w-full px-4 py-2 bg-[#0e0e0e] border border-gray-700 rounded-lg text-white outline-none focus:border-gray-500 transition-all placeholder-gray-600"
                 />
               </div>
 
-              <div className="flex gap-3 pt-4">
+              <div className="flex gap-3 pt-2">
                 <button
                   onClick={() => setNewPageDialog(false)}
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors font-medium"
+                  className="flex-1 px-4 py-2 border border-gray-700 rounded-lg text-gray-300 hover:bg-gray-800 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={addPage}
-                  className="flex-1 px-4 py-2 bg-cyan-500 text-white rounded-lg hover:bg-cyan-600 transition-colors font-medium shadow-lg shadow-cyan-500/30"
+                  className="flex-1 px-4 py-2 bg-white text-black rounded-lg hover:bg-gray-200 transition-colors font-medium"
                 >
                   Create
                 </button>
@@ -454,30 +385,27 @@ export default function NavBar({ activeTab, setActiveTab }) {
       {/* Delete Confirmation Modal */}
       {deleteConfirm && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50"
           onClick={() => setDeleteConfirm(null)}
-          role="dialog"
-          aria-modal="true"
         >
           <div
-            className="bg-white rounded-lg shadow-2xl w-96 p-6"
+            className="bg-[#1a1a1a] border border-gray-700 rounded-lg shadow-2xl w-96 p-6"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="mb-4">
-              <h3 className="text-xl font-bold text-gray-900 mb-2">
+              <h3 className="text-xl font-bold text-white mb-2">
                 Delete Page?
               </h3>
-              <p className="text-gray-600">
-                Are you sure you want to delete "
-                <span className="font-semibold">{deleteConfirm.title}</span>"? 
-                This will also delete all widgets and links on this page.
+              <p className="text-gray-400 text-sm">
+                Delete "<span className="font-semibold text-white">{deleteConfirm.title}</span>"? 
+                All widgets and links will be deleted.
               </p>
             </div>
 
             <div className="flex gap-3 justify-end">
               <button
                 onClick={() => setDeleteConfirm(null)}
-                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors font-medium"
+                className="px-4 py-2 border border-gray-700 rounded-lg text-gray-300 hover:bg-gray-800 transition-colors"
               >
                 Cancel
               </button>

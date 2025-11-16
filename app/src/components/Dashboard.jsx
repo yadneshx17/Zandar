@@ -102,7 +102,6 @@ const Dashboard = ({ activePage = "Home" }) => {
     
     if (!draggedWidget || draggedWidget.id === targetWidget.id) return;
     
-    // Calculate position (above or below)
     const rect = e.currentTarget.getBoundingClientRect();
     const mouseY = e.clientY;
     const widgetMiddle = rect.top + rect.height / 2;
@@ -121,17 +120,11 @@ const Dashboard = ({ activePage = "Home" }) => {
     const targetColumnId = targetWidget.columnId;
     const columnWidgets = getWidgetsByColumn(targetColumnId);
     
-    // Remove dragged widget from current position
     const filteredWidgets = columnWidgets.filter(w => w.id !== draggedWidget.id);
-    
-    // Find target index
     const targetIndex = filteredWidgets.findIndex(w => w.id === targetWidget.id);
-    
-    // Insert based on drop position
     const newIndex = dropPosition === 'above' ? targetIndex : targetIndex + 1;
     filteredWidgets.splice(newIndex, 0, draggedWidget);
     
-    // Update all widgets in column
     const updates = filteredWidgets.map((widget, index) => {
       return db.widgets.update(widget.id, {
         columnId: targetColumnId,
@@ -153,7 +146,6 @@ const Dashboard = ({ activePage = "Home" }) => {
     
     if (!draggedWidget) return;
     
-    // Drop on empty space in column
     if (!dragOverWidget) {
       const columnWidgets = getWidgetsByColumn(targetColumnId);
       const maxOrder = columnWidgets.length > 0 
@@ -175,32 +167,44 @@ const Dashboard = ({ activePage = "Home" }) => {
 
   if (!dbPages) {
     return (
-      <div className="min-h-screen bg-white p-8 flex items-center justify-center">
+      <div className="min-h-screen bg-black flex items-center justify-center">
         <div className="text-center text-gray-400">
-          <p className="text-xl mb-2">Loading...</p>
+          <p className="text-xl">Loading...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-white p-8">
-      {/* Debug info */}
-      <div className="max-w-full mx-auto mb-4 text-xs text-gray-500">
-        <p>Active Page: {activePage} | Page ID: {getCurrentPageId()} | Widgets: {widgets.length}</p>
-      </div>
-
-      <div className="grid grid-cols-3 gap-6 max-w-full mx-auto">
+    <div className="min-h-screen bg-[#020202] px-8 py-6">
+      <div className="grid grid-cols-3 gap-4 max-w-full mx-auto">
         {widgets.length === 0 ? (
-          <div className="col-span-3 flex flex-col items-center justify-center py-16 text-gray-400">
-            <p className="mb-2 text-lg">No widgets on this page yet</p>
-            <p className="text-sm mb-6">Click "Add Widget" to get started</p>
+          <div className="col-span-3 flex flex-col items-center justify-center py-24">
             <button 
               onClick={() => addWidget(1)}
-              className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-gray-400 hover:text-gray-700 hover:bg-gray-50 flex flex-col items-center justify-center gap-3 min-h-[200px] min-w-[300px] transition-colors"
+              className="group relative flex flex-col items-center gap-3 px-12 py-10 
+                bg-[#161616]
+                hover:bg-[#1c1c1f]
+                border-2 border-dashed border-zinc-700
+                hover:border-zinc-700
+                hover:border-solid
+                rounded-2xl 
+                shadow-[0_4px_10px_rgba(0,0,0,0.4)]
+                hover:shadow-[0_8px_20px_rgba(0,0,0,0.5)]
+                hover:-translate-y-1
+                transition-all 
+                duration-300"
             >
-              <Plus size={40}/>
-              <span className="font-medium text-lg">Add Widget</span>
+              <Plus 
+                size={48} 
+                className="text-neutral-600 group-hover:text-gray-300 group-hover:rotate-90 transition-all duration-500" 
+              />
+              <span className="text-base font-medium text-gray-400 group-hover:text-gray-200 transition-colors duration-300">
+                Add Widget
+              </span>
+              <span className="text-xs text-[#767676] group-hover:text-gray-200 transition-colors duration-300">
+                Click to get started
+              </span>
             </button>
           </div>
         ) : (
@@ -212,76 +216,56 @@ const Dashboard = ({ activePage = "Home" }) => {
               return (
                 <div 
                   key={columnId} 
-                  className={`min-h-[500px] p-3 rounded-xl transition-all duration-300 ${
-                    isColumnHovered 
-                      ? 'bg-gradient-to-b from-cyan-50 to-blue-50 ring-2 ring-cyan-400 ring-offset-2 shadow-xl' 
-                      : 'bg-gray-50/50'
+                  className={`space-y-6 mx-1 my-6 transition-all duration-200 group ${
+                    isColumnHovered ? 'opacity-100' : 'opacity-100'
                   }`}
                   onDragOver={(e) => handleColumnDragOver(e, columnId)}
                   onDrop={(e) => handleColumnDrop(e, columnId)}
                   onDragLeave={() => setDragOverColumn(null)}
                 >
-                  
+                  {columnWidgets.map((widget) => {
+                    const isDragging = draggedWidget?.id === widget.id;
+                    const isDropTarget = dragOverWidget === widget.id;
+                    const showAboveLine = isDropTarget && dropPosition === 'above';
+                    const showBelowLine = isDropTarget && dropPosition === 'below';
 
-                  {/* Widgets */}
-                  <div className="space-y-3 mb-4">
-                    {columnWidgets.map((widget) => {
-                      const isDragging = draggedWidget?.id === widget.id;
-                      const isDropTarget = dragOverWidget === widget.id;
-                      const showAboveLine = isDropTarget && dropPosition === 'above';
-                      const showBelowLine = isDropTarget && dropPosition === 'below';
+                    return (
+                      <div key={widget.id} className="relative">
+                        {showAboveLine && (
+                          <div className="absolute-top-2 left-0 right-0 h-0.5 bg-gray-500 rounded-full" />
+                        )}
 
-                      return (
-                        <div key={widget.id} className="relative">
-                          {/* Drop indicator ABOVE */}
-                          {showAboveLine && (
-                            <div className="absolute -top-2 left-0 right-0 h-1 bg-cyan-500 rounded-full shadow-lg shadow-cyan-500/50" />
-                          )}
-
-                          <div
-                            draggable
-                            onDragStart={(e) => handleWidgetDragStart(e, widget)}
-                            onDragEnd={handleWidgetDragEnd}
-                            onDragOver={(e) => handleWidgetDragOver(e, widget)}
-                            onDrop={(e) => handleWidgetDrop(e, widget)}
-                            className={`
-                              cursor-move transition-all duration-200 
-                              ${isDragging 
-                                ? 'opacity-30 scale-95' 
-                                : 'opacity-100 scale-100 hover:scale-102'
-                              }
-                            `}
-                          >
-                            <Widget
-                              widget={widget}
-                              widgets={widgets}
-                              setWidgets={setWidgets}
-                            />
-                          </div>
-
-                          {/* Drop indicator BELOW */}
-                          {showBelowLine && (
-                            <div className="absolute -bottom-2 left-0 right-0 h-1 bg-cyan-500 rounded-full shadow-lg shadow-cyan-500/50" />
-                          )}
+                        <div
+                          draggable
+                          onDragStart={(e) => handleWidgetDragStart(e, widget)}
+                          onDragEnd={handleWidgetDragEnd}
+                          onDragOver={(e) => handleWidgetDragOver(e, widget)}
+                          onDrop={(e) => handleWidgetDrop(e, widget)}
+                          className={`
+                            cursor-move transition-all duration-200
+                            ${isDragging ? 'opacity-30 scale-95' : 'opacity-100 scale-100'}
+                          `}
+                        >
+                          <Widget
+                            widget={widget}
+                            widgets={widgets}
+                            setWidgets={setWidgets}
+                          />
                         </div>
-                      );
-                    })}
-                  </div>
 
-                  {/* Add Widget Button */}
+                        {showBelowLine && (
+                          <div className="absolute-bottom-2 left-0 right-0 h-0.5 bg-gray-500 rounded-full" />
+                        )}
+                      </div>
+                    );
+                  })}
+
                   <button 
                     onClick={() => addWidget(columnId)}
-                    className={`
-                      w-full flex items-center justify-center gap-2 
-                      p-3 rounded-lg font-medium transition-all duration-200
-                      ${isColumnHovered
-                        ? 'bg-cyan-500 text-white shadow-lg scale-105'
-                        : 'bg-white border-2 border-dashed border-gray-300 text-gray-600 hover:border-gray-400 hover:bg-gray-50'
-                      }
-                    `}
+                    className="flex items-center text-[#020202] justify-center gap-2 px-3 rounded-xl transition-all duration-150 group-hover:text-[#767676]/75 hover:!text-white"
                   >
-                    <Plus size={20}/>
-                    <span>Add Widget</span>
+                    <Plus size={20} />
+                    <span className="text-sm">Add widget</span>
                   </button>
                 </div>
               );
