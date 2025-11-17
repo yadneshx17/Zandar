@@ -5,7 +5,7 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "../db";
 import Widget from "./Widgets";
 
-const Dashboard = ({ activePage = "Home" }) => {
+const Dashboard = ({ activePage = "c9f9bcf-2a55-4784-8a9b-637cbe8efba0" }) => {
   const dbWidgets = useLiveQuery(() => db.widgets.toArray(), []);
   const dbLinks = useLiveQuery(() => db.links.toArray(), []);
   const dbPages = useLiveQuery(() => db.pages.toArray(), []);
@@ -20,7 +20,7 @@ const Dashboard = ({ activePage = "Home" }) => {
 
   const getCurrentPageId = useCallback(() => {
     if (!dbPages || !activePage) return null;
-    const page = dbPages.find(p => p.title === activePage);
+    const page = dbPages.find(p => p.uuid === activePage);
     return page ? page.id : null;
   }, [dbPages, activePage]);
 

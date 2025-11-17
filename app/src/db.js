@@ -23,7 +23,7 @@ db.on("populate", async () => {
 
   // Create default page
   const pageId = await db.pages.add({
-    uuid: uuidv4(),
+    uuid: "c95f9bcf-2a55-4784-8a9b-637cbe8efba0",
     title: "Home",
     createdAt: now,
     updatedAt: now

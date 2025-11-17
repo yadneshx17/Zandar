@@ -31,7 +31,7 @@ export default function NavBar({ activeTab, setActiveTab }) {
       setPages(dbPages);
       
       if (!activeTab) {
-        setActiveTab(dbPages[0].title);
+        setActiveTab(dbPages[0].uuid);
       }
     }
   }, [dbPages, activeTab, setActiveTab]);
@@ -47,10 +47,10 @@ export default function NavBar({ activeTab, setActiveTab }) {
       await db.widgets.where({ pageId: pageToDelete.id }).delete();
       await db.pages.delete(pageToDelete.id);
       
-      if (activeTab === pageToDelete.title) {
+      if (activeTab === pageToDelete.uuid) {
         const remainingPages = dbPages.filter(p => p.id !== pageToDelete.id);
         if (remainingPages.length > 0) {
-          setActiveTab(remainingPages[0].title);
+          setActiveTab(remainingPages[0].uuid);
         } else {
           setActiveTab("");
         }
@@ -77,7 +77,7 @@ export default function NavBar({ activeTab, setActiveTab }) {
         updatedAt: now(),
       });
 
-      setActiveTab(newPage.title);
+      setActiveTab(newPage.uuid);
       setNewPage({ title: "" });
       setNewPageDialog(false);
     } catch (error) {
@@ -143,6 +143,7 @@ export default function NavBar({ activeTab, setActiveTab }) {
         <div className="flex items-center justify-between h-12 px-4">
           {/* Left side - Dropdown & Tabs */}
           <div className="flex items-center gap-4">
+
             {/* Dropdown Menu */}
             <div className="relative">
               <button
@@ -155,60 +156,97 @@ export default function NavBar({ activeTab, setActiveTab }) {
 
               {/* Dropdown Menu */}
               {dropdownOpen && (
-                <>
-                  <div
-                    className="fixed inset-0 z-30"
-                    onClick={() => setDropdownOpen(false)}
-                  />
+              <>
+                {/* Subtle backdrop */}
+                <div
+                  className="fixed inset-0 z-30 bg-black/20 backdrop-blur-[2px]"
+                  onClick={() => setDropdownOpen(false)}
+                />
 
-                  <div className="absolute top-full left-0 mt-2 w-64 bg-[#1a1a1a] border border-gray-700 rounded-lg shadow-2xl z-40 overflow-hidden">
-                    <div className="p-2">
-                      <div className="flex items-center justify-between px-2 py-1 mb-1">
-                        <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                          Pages
-                        </span>
-                        <button
-                          onClick={() => {
-                            setDropdownOpen(false);
-                            setNewPageDialog(true);
-                          }}
-                          className="text-gray-400 hover:text-white transition-colors"
-                        >
-                          <Plus size={16} />
-                        </button>
-                      </div>
-
-                      {pages.map((page) => (
-                        <div
-                          key={page.id}
-                          className="flex items-center justify-between group/item px-2 py-1.5 rounded hover:bg-gray-800"
-                        >
-                          <button
-                            onClick={() => {
-                              setActiveTab(page.title);
-                              setDropdownOpen(false);
-                            }}
-                            className="flex-1 text-left text-sm text-gray-300 hover:text-white"
-                          >
-                            {page.title}
-                          </button>
-
-                          <div className="flex items-center gap-1 opacity-0 group-hover/item:opacity-100">
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setDeleteConfirm(page);
-                              }}
-                              className="text-gray-500 hover:text-red-400 p-1 rounded transition-colors"
-                            >
-                              <X size={14} />
-                            </button>
-                          </div>
-                        </div>
-                      ))}
+                {/* Dropdown with depth layers */}
+                <div 
+                className="absolute top-full left-0 mt-4 w-80 z-40 bg-[#161616] border border-white/[0.08] rounded-lg shadow-[0_8px_32px_rgba(0,0,0,0.6),0_4px_0px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.05)] overflow-hidden"
+                >
+                  
+                  {/* Header with subtle top light */}
+                  <div className="relative px-4 py-3">
+                    <div className="absolute top-0 left-0 right-0 h-px"></div>
+                    
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium text-neutral-200 font-semibold tracking-wider ml-2">
+                        My Pages
+                      </span>
+                      <button
+                        onClick={() => {
+                          setDropdownOpen(false);
+                          setNewPageDialog(true);
+                        }}
+                        className="text-neutral-200 hover:text-white hover:bg-white/[0.05] p-1.5 rounded-lg transition-all hover:shadow-[0_4px_12px_rgba(0,0,0,0.3)]"
+                      >
+                        <Plus size={16} />
+                      </button>
                     </div>
                   </div>
-                </>
+
+                  {/* Pages List */}
+                  <div className="p-2 max-h-[400px] overflow-y-auto">
+                    {pages.map((page) => (
+                      <button
+                        key={page.id}
+                        onClick={() => {
+                          setActiveTab(page.uuid);
+                          setDropdownOpen(false);
+                        }}
+                        className={`
+                          w-full group/item relative flex items-center justify-between 
+                          py-2 mb-1 rounded-xl transition-all duration-200
+                          ${activeTab === page.uuid 
+                            ? 'bg-gradient-to-b from-white/[0.12] to-white/[0.08] px-2 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.15),inset_0_-1px_0_rgba(0,0,0,0.2),0_4px_16px_rgba(0,0,0,0.4)]' 
+                            : 'text-white/50 hover:bg-white/[0.03] px-2 hover:text-white hover:shadow-[0_2px_8px_rgba(0,0,0,0.2)]'
+                          }
+                        `}
+                      >
+                        {/* Active indicator - subtle left border */}
+                        {activeTab === page.uuid && (
+                          <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-gradient-to-b from-white/40 via-white/60 to-white/40 rounded-r-full shadow-[0_0_14px_rgba(255,255,255,0.3)]"></div>
+                        )}
+
+                        <span className={`text-sm 
+                          ${activeTab === page.uuid ? 'text-neutral-300' : 'text-neutral-500' } font-medium ml-3`}
+                        >
+                          {page.title}
+                        </span>
+
+                        {/* Delete button */}
+                        <div className="absolute right-2 top-1/2 -translate-y-1/2">
+
+                          <button className="opacity-0 group-hover/item:opacity-100 text-neutral-500 hover:text-white hover:bg-white/[0.08] ml-3 mr-2 p-1.5 rounded-lg transition-all">
+                            <Pencil size={14} />
+                          </button>
+
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setDeleteConfirm(page);
+                            }}
+                            className="opacity-0 group-hover/item:opacity-100 text-neutral-500 hover:text-red-400 hover:bg-white/[0.08] mr-1 p-1.5 rounded-lg transition-all"
+                          >
+                            <X size={14} />
+                          </button>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Footer */}
+                  <div className="relative px-4 py-2.5">
+                    <div className="absolute bottom-0 left-0 right-0 h-px bg-[#161616]"></div>
+                    <div className="text-center text-xs text-neutral-600">
+                      {pages.length} {pages.length === 1 ? 'page' : 'pages'}
+                    </div>
+                  </div>
+                </div>
+              </>
               )}
             </div>
 
@@ -229,7 +267,7 @@ export default function NavBar({ activeTab, setActiveTab }) {
                     onDrop={(e) => handleDrop(e, index)}
                     className={`
                       px-5 py-2 rounded-xl cursor-move transition-all duration-200
-                      ${activeTab === page.title 
+                      ${activeTab === page.uuid 
                         ? "bg-white text-sm text-black font-bold" 
                         : "bg-[#2A2A2C] text-sm text-white hover:text-white shadow-[0_4px_10px_rgba(0,0,0,0.4)]"
                       }
@@ -238,7 +276,7 @@ export default function NavBar({ activeTab, setActiveTab }) {
                     `}
                   >
                     <button
-                      onClick={() => setActiveTab(page.title)}
+                      onClick={() => setActiveTab(page.uuid)}
                       className="w-full"
                     >
                       {page.title}
@@ -262,6 +300,23 @@ export default function NavBar({ activeTab, setActiveTab }) {
             
           {/* Right side - Icons */}
           <div className="flex items-center gap-4 px-1">
+            
+            {/* Remove in Production :) */}
+            <div>
+              <button 
+                className="px-3 py-1 bg-red-600 rounded"
+                
+                onClick={ async () => {
+                  if(confirm('Delete all data and reset? :)')) {
+                    await db.delete();
+                    window.location.reload();
+                  }
+                }}
+              >
+                Reset
+              </button>
+            </div>
+
             <div className="flex items-center gap-2">
               <button
                 className="text-gray-400 hover:text-white transition-colors p-1.5 rounded hover:bg-gray-800"
