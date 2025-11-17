@@ -35,7 +35,7 @@ db.on("populate", async () => {
     {
       uuid: uuidv4(),
       id: 1,
-      title: "Developer Essentials",
+      title: "Developer Essentials (default)",
       pageId,
       columnId: 1,
       order: 0,
@@ -46,7 +46,7 @@ db.on("populate", async () => {
     {
       uuid: uuidv4(),
       id: 2,
-      title: "Socials",
+      title: "Socials (default)",
       pageId,
       columnId: 2,
       order: 0,
@@ -57,7 +57,7 @@ db.on("populate", async () => {
     {
       uuid: uuidv4(),
       id: 3,
-      title: "VibeCoding",
+      title: "VibeCoding (default)",
       pageId,
       columnId: 3,
       order: 0,
