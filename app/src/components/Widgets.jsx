@@ -18,6 +18,7 @@ const Widget = ({ widget, widgets, setWidgets }) => {
   
   const [draggedLink, setDraggedLink] = useState(null);
   const [dragOverLink, setDragOverLink] = useState(null);
+  const [isMouseDown, setIsMouseDown] = useState(null);
 
   const now = () => new Date().toISOString();
 
@@ -317,10 +318,15 @@ const Widget = ({ widget, widgets, setWidgets }) => {
                   onDrop={(e) => handleLinkDrop(e, l)}
                   className={`
                     group/link flex items-center gap-3 my-1 rounded-lg
-                    hover:text-gray-200 cursor-move transition-all
+                    hover:text-white  hover:underline cursor-move transition-all
+                    text-sm
                     ${isDragging ? 'opacity-30 scale-95' : 'opacity-100 scale-100'}
                     ${isDropTarget ? 'bg-[#27272a]' : ''}
+                    
                   `}
+                  onMouseDown = { () => setIsMouseDown(l.id)}
+                  onMouseUp={() => setIsMouseDown(null)}
+                  onMouseLeave={() => setIsMouseDown(null)}
                 >
                   <img
                     src={`https://www.google.com/s2/favicons?domain=${l.url}&sz=32`}
@@ -332,7 +338,9 @@ const Widget = ({ widget, widgets, setWidgets }) => {
                     href={l.url} 
                     target="_blank" 
                     rel="noopener noreferrer" 
-                    className="flex-1 text-sm text-gray-300 hover:text-white truncate"
+                    className={`flex-1 text-gray-300 hover:text-white truncate transition-all
+                    ${isMouseDown === l.id ? "scale-[0.97] opacity-70" : "scale-100 opacity-100"}
+                    `}
                   >
                     {l.name}
                   </a>
