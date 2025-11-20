@@ -1,4 +1,4 @@
-import { db } from '../db'
+import { db } from "../services/db/schema.js";
 import { useLiveQuery } from 'dexie-react-hooks'
 
 function LinkList() {

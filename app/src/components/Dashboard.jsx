@@ -2,13 +2,13 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Plus } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 import { useLiveQuery } from "dexie-react-hooks";
-import { db } from "../db";
+import { db } from "../services/db/schema.js";
 import Widget from "./Widgets";
 
 const Dashboard = ({ activePage = "c9f9bcf-2a55-4784-8a9b-637cbe8efba0" }) => {
+  const dbPages = useLiveQuery(() => db.pages.toArray(), []);
   const dbWidgets = useLiveQuery(() => db.widgets.toArray(), []);
   const dbLinks = useLiveQuery(() => db.links.toArray(), []);
-  const dbPages = useLiveQuery(() => db.pages.toArray(), []);
 
   const [widgets, setWidgets] = useState([]);
   const [draggedWidget, setDraggedWidget] = useState(null);
@@ -24,6 +24,7 @@ const Dashboard = ({ activePage = "c9f9bcf-2a55-4784-8a9b-637cbe8efba0" }) => {
     return page ? page.id : null;
   }, [dbPages, activePage]);
 
+  // Optimise this.
   useEffect(() => {
     if (dbWidgets && dbLinks && dbPages) {
       const currentPageId = getCurrentPageId();
@@ -33,9 +34,10 @@ const Dashboard = ({ activePage = "c9f9bcf-2a55-4784-8a9b-637cbe8efba0" }) => {
         return;
       }
 
-      const pageWidgets = dbWidgets.filter(widget => widget.pageId === currentPageId);
+      const widgetsForCurrentPage = dbWidgets.filter(widget => widget.pageId === currentPageId);
       
-      const data = pageWidgets.map((widget) => ({
+      // O(M x N)
+      const data = widgetsForCurrentPage.map((widget) => ({
         ...widget,
         links: dbLinks.filter((link) => link.widgetId === widget.id),
       }));

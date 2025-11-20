@@ -8,7 +8,7 @@ import {
   AlertTriangle
 } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
-import { db } from "../db";
+import { db } from "../services/db/schema.js";
 
 const Widget = ({ widget, widgets, setWidgets }) => {
   const [showAddLink, setShowAddLink] = useState(false);
@@ -322,8 +322,7 @@ const Widget = ({ widget, widgets, setWidgets }) => {
                     text-sm
                     ${isDragging ? 'opacity-30 scale-95' : 'opacity-100 scale-100'}
                     ${isDropTarget ? 'bg-[#27272a]' : ''}
-                    
-                  `}
+                    `}
                   onMouseDown = { () => setIsMouseDown(l.id)}
                   onMouseUp={() => setIsMouseDown(null)}
                   onMouseLeave={() => setIsMouseDown(null)}

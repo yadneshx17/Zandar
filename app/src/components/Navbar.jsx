@@ -9,8 +9,9 @@ import {
   Menu,
 } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
-import { db } from "../db";
+import { db } from "../services/db/schema.js";
 import { useLiveQuery } from 'dexie-react-hooks';
+import BackupManager from "./BackupManager.jsx";
 
 export default function NavBar({ activeTab, setActiveTab }) {
   const dbPages = useLiveQuery(() => db.pages.toArray(), []);
@@ -23,6 +24,7 @@ export default function NavBar({ activeTab, setActiveTab }) {
   const [newPageDialog, setNewPageDialog] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [newPage, setNewPage] = useState({ title: "" });
+  // const [transparentNav, setTransparentNav] = useState(false);
 
   const now = () => new Date().toISOString();
 
@@ -320,6 +322,7 @@ export default function NavBar({ activeTab, setActiveTab }) {
                 Reset
               </button>
             </div>
+            <BackupManager />
 
             <div className="flex items-center gap-2">
               <button

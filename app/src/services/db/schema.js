@@ -17,6 +17,8 @@ db.version(1).stores({
  * db.version(2).stores({ ... }).upgrade(tx => { migrate data })
  */
 
+
+// Populating the Defaults.
 db.on("populate", async () => {
 
   const now = new Date().toISOString();
