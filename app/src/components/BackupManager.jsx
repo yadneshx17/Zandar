@@ -50,8 +50,7 @@ const BackupManager = () => {
           `${result.stats.pagesImported} pages, ${result.stats.widgetsImported} widgets, ${result.stats.linksImported} links`
         );
         
-        // Refresh page to reload data
-        setTimeout(() => window.location.reload(), 1500);
+        // setTimeout(() => window.location.reload(), 1500);
       } else {
         showNotification("error", "Import failed", result.error);
       }
@@ -75,50 +74,52 @@ const BackupManager = () => {
   }, [stats]);
 
   return (
-      <div className="bg-[#232323] rounded-lg p-6">
-      <div className="flex items-center gap-3 mb-6">
-        <Database size={24} className="text-gray-400" />
-        <h2 className="text-xl font-semibold text-white">Backup & Restore</h2>
+    <div className="bg-[#232323] rounded-lg p-4">
+      {/* Header */}
+      <div className="flex items-center gap-2 mb-4">
+        <Database size={18} className="text-gray-400" />
+        <h2 className="text-sm font-semibold text-white">Backup & Restore</h2>
       </div>
 
       {/* Statistics */}
       {stats && (
-        <div className="grid grid-cols-3 gap-3 mb-6">
-          <div className="bg-[#27272a] rounded-lg p-3 text-center">
-            <div className="text-2xl font-bold text-white">{stats.pages}</div>
-            <div className="text-xs text-gray-400">Pages</div>
+        <div className="grid grid-cols-3 gap-2 mb-4">
+          <div className="bg-[#27272a] rounded-lg py-3 text-center">
+            <div className="text-lg font-bold text-white">{stats.pages}</div>
+            <div className="text-[10px] text-gray-400 mt-0.5">Pages</div>
           </div>
-          <div className="bg-[#27272a] rounded-lg p-3 text-center">
-            <div className="text-2xl font-bold text-white">{stats.widgets}</div>
-            <div className="text-xs text-gray-400">Widgets</div>
+          <div className="bg-[#27272a] rounded-lg py-3 text-center">
+            <div className="text-lg font-bold text-white">{stats.widgets}</div>
+            <div className="text-[10px] text-gray-400 mt-0.5">Widgets</div>
           </div>
-          <div className="bg-[#27272a] rounded-lg p-3 text-center">
-            <div className="text-2xl font-bold text-white">{stats.links}</div>
-            <div className="text-xs text-gray-400">Links</div>
+          <div className="bg-[#27272a] rounded-lg py-3 text-center">
+            <div className="text-lg font-bold text-white">{stats.links}</div>
+            <div className="text-[10px] text-gray-400 mt-0.5">Links</div>
           </div>
         </div>
       )}
 
       {/* Actions */}
-      <div className="flex gap-3">
+      <div className="flex gap-2 mb-4">
         <button
           onClick={handleExport}
           disabled={isExporting}
-          className="flex-1 flex items-center justify-center gap-2 bg-white text-black px-4 py-3 rounded-lg font-medium hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full flex items-center justify-center gap-2 bg-white text-black px-3  rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <Download size={18} />
-          {isExporting ? "Exporting..." : "Export Backup"}
+          <Download size={16} />
+          <span>{isExporting ? "Exporting..." : "Export Backup"}</span>
         </button>
 
         <button
           onClick={() => fileInputRef.current?.click()}
           disabled={isImporting}
-          className="flex-1 flex items-center justify-center gap-2 bg-[#27272a] text-white px-4 py-3 rounded-lg font-medium hover:bg-[#3f3f46] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full flex items-center justify-center gap-2 bg-white text-black px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <Upload size={18} />
-          {isImporting ? "Importing..." : "Import Backup"}
+          <Upload size={16} />
+          <span>{isImporting ? "Importing..." : "Import Backup"}</span>
         </button>
 
+        {/* file imporrt */}
         <input
           ref={fileInputRef}
           type="file"
@@ -130,24 +131,24 @@ const BackupManager = () => {
 
       {/* Notification */}
       {notification && (
-        <div className={`mt-4 p-4 rounded-lg flex items-start gap-3 ${
+        <div className={`p-3 rounded-lg flex items-start gap-2 mb-4 ${
           notification.type === "success" 
             ? "bg-green-500/10 border border-green-500/30" 
             : "bg-red-500/10 border border-red-500/30"
         }`}>
           {notification.type === "success" ? (
-            <CheckCircle size={20} className="text-green-400 flex-shrink-0 mt-0.5" />
+            <CheckCircle size={16} className="text-green-400 flex-shrink-0 mt-0.5" />
           ) : (
-            <AlertCircle size={20} className="text-red-400 flex-shrink-0 mt-0.5" />
+            <AlertCircle size={16} className="text-red-400 flex-shrink-0 mt-0.5" />
           )}
-          <div className="flex-1">
-            <div className={`font-medium ${
+          <div className="flex-1 min-w-0">
+            <div className={`text-xs font-medium ${
               notification.type === "success" ? "text-green-400" : "text-red-400"
             }`}>
               {notification.message}
             </div>
             {notification.details && (
-              <div className="text-sm text-gray-400 mt-1">
+              <div className="text-[10px] text-gray-400 mt-1">
                 {notification.details}
               </div>
             )}
@@ -156,9 +157,9 @@ const BackupManager = () => {
       )}
 
       {/* Info */}
-      <div className="mt-4 p-3 bg-[#27272a] rounded-lg">
-        <p className="text-xs text-gray-400">
-          💡 <strong>Tip:</strong> Export creates a backup file. Import replaces all current data with backup data.
+      <div className="p-2.5 bg-[#27272a] rounded-lg">
+        <p className="text-[10px] text-gray-400 leading-relaxed">
+          💡 <span className="font-medium">Tip:</span> Export creates a backup file. Import replaces all current data.
         </p>
       </div>
     </div>

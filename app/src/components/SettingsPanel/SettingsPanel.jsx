@@ -7,7 +7,7 @@ import {
 import SearchBar from "../SearchBar";
 import BackupManager from "../BackupManager";
 
-const PANEL_WIDTH = "450px";
+const PANEL_WIDTH = "400px";
 
 const SettingsPanel = ({ isOpen, onClose }) => {
   
