@@ -112,6 +112,10 @@ const validateBackupStructure = (backup) => {
   if (!backup.version || !backup.data) {
     return false;
   }
+  
+  if ( backup.version !== BACKUP_VERSION ) {
+    throw new Error("Incompatible backup version");
+  }
 
   const hasRequiredTables =
     Array.isArray(backup.data.pages) &&
