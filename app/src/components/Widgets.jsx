@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   Plus, 
   Trash2, 
@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 import { db } from "../services/db/schema.js";
+import {SettingsContext} from "./SettingsProvider.jsx"
 
 const Widget = ({ widget, widgets, setWidgets }) => {
   const [showAddLink, setShowAddLink] = useState(false);
@@ -21,7 +22,14 @@ const Widget = ({ widget, widgets, setWidgets }) => {
   const [isMouseDown, setIsMouseDown] = useState(null);
 
   const now = () => new Date().toISOString();
+  
+  const { widgetOpacity } = useContext(SettingsContext);
 
+  const widgetStyle = {
+    backgroundColor: `rgba(23, 23, 23, ${widgetOpacity / 100})`, 
+    borderColor: `rgba(38, 38, 38, ${widgetOpacity / 100})`, 
+  };
+  
   const [newLink, setNewLink] = useState({
     name: "",
     url: "",
@@ -229,6 +237,7 @@ const Widget = ({ widget, widgets, setWidgets }) => {
         onMouseLeave={() => setIsHovered(false)}
         onDragOver={(e) => e.preventDefault()}
         onDrop={handleWidgetDrop}
+        style={widgetStyle}
       >
         {/* Header */}
         <div className="flex justify-between items-center mb-4">

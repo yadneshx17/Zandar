@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, createContext, useContext} from "react";
 import { Plus } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 import { useLiveQuery } from "dexie-react-hooks";
@@ -176,14 +176,13 @@ const Dashboard = ({ activePage = "c9f9bcf-2a55-4784-8a9b-637cbe8efba0" }) => {
       </div>
     );
   }
-
+  
   return (
     // this for my local version
-    // <div className='bg-[url("/assets/redCloud.jpg")] bg-cover bg-center min-h-screen bg-[#020202] px-8 py-6'>
-    <div className="min-h-screen bg-[#020202] px-8 py-6">
+    <div className="min-h-screen px-8 py-6">
       <div className="grid grid-cols-3 gap-4 max-w-full mx-auto">
         {widgets.length === 0 ? (
-          <div className="col-span-3 flex flex-col items-center justify-center py-24">
+            <div className="col-span-3 flex flex-col items-center justify-center py-24"            >
             <button 
               onClick={() => addWidget(1)}
               className="group relative flex flex-col items-center gap-3 px-12 py-10 
@@ -234,7 +233,8 @@ const Dashboard = ({ activePage = "c9f9bcf-2a55-4784-8a9b-637cbe8efba0" }) => {
                     const showBelowLine = isDropTarget && dropPosition === 'below';
 
                     return (
-                      <div key={widget.id} className="relative">
+                      <div key={widget.id} className="relative"
+                      >
                         {showAboveLine && (
                           <div className="absolute-top-2 left-0 right-0 h-0.5 bg-gray-500 rounded-full" />
                         )}

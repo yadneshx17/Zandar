@@ -1,7 +1,7 @@
 import Dexie from "dexie";
 import { v4 as uuidv4 } from "uuid";
 
-export const db = new Dexie("bookmarkdb");
+export const db = new Dexie("ZandarDB");
 
 /**
  * Version 1 — initial schema
@@ -12,12 +12,18 @@ db.version(1).stores({
   links: "++id, uuid, widgetId, order, name, url, createdAt, updatedAt"
 });
 
+// version 2 - add images store
+db.version(2).stores({
+  image: "" 
+})
+
 /**
  * Future example migration
  * db.version(2).stores({ ... }).upgrade(tx => { migrate data })
  */
 
 
+// remove later
 // Populating the Defaults.
 db.on("populate", async () => {
 

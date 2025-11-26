@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   X,
   Pencil,
@@ -11,8 +11,8 @@ import {
 import { v4 as uuidv4 } from "uuid";
 import { db } from "../services/db/schema.js";
 import { useLiveQuery } from 'dexie-react-hooks';
-import BackupManager from "./SettingsPanel/BackupManager.jsx";
 import SettingsPanel from "./SettingsPanel/SettingsPanel";
+import {SettingsContext} from "./SettingsProvider"
 
 export default function NavBar({ activeTab, setActiveTab }) {
   const dbPages = useLiveQuery(() => db.pages.toArray(), []);
@@ -25,10 +25,10 @@ export default function NavBar({ activeTab, setActiveTab }) {
   const [newPageDialog, setNewPageDialog] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [newPage, setNewPage] = useState({ title: "" });
-  const [settingsOpen, setSettingsOpen] = useState(false);
+  // const [settingsOpen, setSettingsOpen] = useState(false);
   const [editingPageTitleById, setEditingPageTitleById] = useState(null);
 
-  // const [transparentNav, setTransparentNav] = useState(false);
+  const { widgetOpacity, settingsOpen, setSettingsOpen } = useContext(SettingsContext);
 
   const now = () => new Date().toISOString();
 
@@ -159,11 +159,14 @@ export default function NavBar({ activeTab, setActiveTab }) {
 
   return (
     <>
-      <nav className="bg-[#161616] font-sans text-white border-b border-gray-800">
+      {/* <nav className="bg-[#161616] font-sans text-white border-b border-gray-800"> */}
+      <nav 
+        className="border-gray-200"
+        style={{ backgroundColor: `rgba(10, 10, 10, ${Math.max(0.8, widgetOpacity / 100)})` }}
+      >
         <div className="flex items-center justify-between h-12 px-4">
           {/* Left side - Dropdown & Tabs */}
           <div className="flex items-center gap-4">
-
             {/* Dropdown Menu */}
             <div className="relative">
               <button
@@ -385,15 +388,15 @@ export default function NavBar({ activeTab, setActiveTab }) {
             <div className="h-4 w-[2px] rounded-full bg-[#2A2A2C]"></div>            
 
             <button
-              onClick={() => setSettingsOpen(true)}
+              onClick={() => setSettingsOpen(!settingsOpen)}
               className="text-gray-400 hover:text-white transition-colors p-1.5 rounded hover:bg-gray-800"
             >
               <Settings2 size={18} />
             </button>
-            <SettingsPanel 
+            {/* <SettingsPanel 
               isOpen={settingsOpen} 
               onClose={() => setSettingsOpen(false)} 
-            />
+            /> */}
 
           </div>
         </div>
