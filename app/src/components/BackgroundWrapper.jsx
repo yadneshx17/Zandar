@@ -5,32 +5,20 @@ import { getImageBlob } from "../services/db/imageStore";
 const BackgroundWrapper = () => {
     const { bgType, setBgType, setBgFile, bgFile, bgBrightness, bgBlur, imgUrl, setImgUrl } = useContext(SettingsContext);
 
-    // Load image from IndexedDB + localStorage
-    useEffect(() => {
-      const key = localStorage.getItem("bgImageKey");
-      if (!key) return;
-
-      getImageBlob(key).then(blob => {
-        if (!blob) return;
-        const url = URL.createObjectURL(blob);
-        setImgUrl(url);
-        setBgType("local");
-        setBgFile(url);
-      });
-    }, []);
-
     useEffect(() => {
       const storedType = localStorage.getItem("bgType");
       if (storedType) {
         setBgType(storedType);
       }
-
+      
       if (storedType === "local") {
         const key = localStorage.getItem("bgImageKey");
         if (key) {
           getImageBlob(key).then(blob => {
             if (blob) {
               const url = URL.createObjectURL(blob);
+              setImgUrl(url);
+              setBgFile(url);
               setBgFile(url);
             }
           });
