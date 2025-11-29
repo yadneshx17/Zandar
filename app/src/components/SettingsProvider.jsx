@@ -46,8 +46,6 @@ export const SettingsProvider = ({children}) => {
     localStorage.setItem("widgetOpacity", widgetOpacity);
   }, [widgetOpacity]);
 
-
-
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
     if(!file || !file.name) return;
@@ -72,10 +70,16 @@ export const SettingsProvider = ({children}) => {
 
     // store in db
     await saveImage(key, file);
+
+    // Determine if it's a video
+    const isVideo = ["mp4", "webm"].includes(ext);
+
     
     // store url in localstorage
     localStorage.setItem("bgImageKey", key);
     localStorage.setItem("bgType", "local")
+    localStorage.setItem("bgIsVideo", isVideo);  // Store the media type
+
 
     const url = URL.createObjectURL(file);
     setBgFile(url);
