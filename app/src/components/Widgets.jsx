@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 import { db } from "../services/db/schema.js";
-import {SettingsContext} from "./SettingsProvider.jsx"
+import {SettingsContext} from "../contexts/SettingsProvider.jsx"
 
 const Widget = ({ widget, widgets, setWidgets }) => {
   const [showAddLink, setShowAddLink] = useState(false);

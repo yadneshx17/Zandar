@@ -179,7 +179,7 @@ const Dashboard = ({ activePage = "c9f9bcf-2a55-4784-8a9b-637cbe8efba0" }) => {
   
   return (
     // this for my local version
-    <div className="min-h-screen px-8 py-6">
+    <div className="h-full overflow-y-auto px-8 py-6">
       <div className="grid grid-cols-3 gap-4 max-w-full mx-auto">
         {widgets.length === 0 ? (
             <div className="col-span-3 flex flex-col items-center justify-center py-24"            >

@@ -7,7 +7,7 @@ Menu, Plus, Search, Settings2, Pencil, X, Github, Twitter, Youtube,
 import SearchBar from "../SearchBar";
 import BackupManager from "./BackupManager.jsx";
 import { db } from "../../services/db/schema.js";
-import { SettingsContext } from "../SettingsProvider";
+import { SettingsContext } from "../../contexts/SettingsProvider";
 
 const PANEL_WIDTH = "360px";
 
@@ -143,7 +143,7 @@ const SettingsPanel = ({ isOpen, onClose }) => {
                 )}
 
                 <div className="bg-neutral-900/50 rounded-lg p-4 border border-neutral-800 space-y-4">
-                  <div className="text-xs text-gray-500 font-bold mb-2">BG ADJUSTMENTS</div>
+                  <div className="text-xs text-gray-500 font-bold mb-2 select-none">BG ADJUSTMENTS</div>
                   <div className="space-y-2">
                     <div className="flex justify-between text-xs text-gray-400"><span>Blur</span><span>{bgBlur}px</span></div>
                     <input type="range" min="0" max="20" value={bgBlur} onChange={(e) => setBgBlur(e.target.value)} className="w-full h-1.5 bg-neutral-700 rounded-lg appearance-none cursor-pointer accent-white" />
@@ -157,12 +157,12 @@ const SettingsPanel = ({ isOpen, onClose }) => {
             </div>
 
             <div className="flex items-center justify-between mb-3 pt-4 border-t border-neutral-800">
-              <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider">Interface</h3>
+              <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider select-none">Interface</h3>
             </div>
 
             <div className="space-y-4">
               <div className="space-y-2">
-                <div className="flex justify-between text-xs text-gray-400"><span>Widget Opacity</span><span>{widgetOpacity}%</span></div>
+                <div className="flex justify-between text-xs text-gray-400 select-none"><span>Widget Opacity</span><span>{widgetOpacity}%</span></div>
                 <input type="range" min="20" max="100" value={widgetOpacity} onChange={(e) => setWidgetOpacity(e.target.value)} className="w-full h-1.5 bg-neutral-700 rounded-lg appearance-none cursor-pointer accent-white" />
               </div>
             </div>

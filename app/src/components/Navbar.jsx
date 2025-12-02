@@ -12,7 +12,7 @@ import { v4 as uuidv4 } from "uuid";
 import { db } from "../services/db/schema.js";
 import { useLiveQuery } from 'dexie-react-hooks';
 import SettingsPanel from "./SettingsPanel/SettingsPanel";
-import {SettingsContext} from "./SettingsProvider"
+import {SettingsContext} from "../contexts/SettingsProvider"
 
 export default function NavBar({ activeTab, setActiveTab }) {
   const dbPages = useLiveQuery(() => db.pages.toArray(), []);
@@ -171,7 +171,7 @@ export default function NavBar({ activeTab, setActiveTab }) {
             <div className="relative">
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="flex items-center gap-1 transition-colors mx-1 px-2 py-2 rounded-xl shadow-[0_4px_10px_rgba(0,0,0,0.4)] bg-[#2A2A2C]"
+                className="flex items-center gap-1 mx-1 px-2 py-2 hover:border border-1  rounded-xl shadow-[0_4px_10px_rgba(0,0,0,0.4)] bg-[#2A2A2C] transition-colors"
                 aria-label="Pages menu"
               >
                 <Menu size={18} />
@@ -353,12 +353,12 @@ export default function NavBar({ activeTab, setActiveTab }) {
               })}
 
               {/* Divider */}
-              <div className="h-4 w-[2px] rounded-full bg-[#2A2A2C]"></div>
+              <div className="h-4 w-[2px] rounded-full bg-[#343436]"></div>
 
               {/* Add Page Button */}
               <button
                 onClick={() => setNewPageDialog(true)}
-                className="text-white transition-colors shadow-[0_4px_10px_rgba(0,0,0,0.4)] rounded-full bg-[#2A2A2C] p-2"
+                className="text-white transition-colors hover:border border-1 shadow-[0_4px_10px_rgba(0,0,0,0.4)] rounded-full bg-[#2A2A2C] p-2"
               >
                 <Plus size={18} />
               </button>

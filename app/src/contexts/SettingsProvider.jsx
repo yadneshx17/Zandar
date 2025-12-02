@@ -86,6 +86,7 @@ export const SettingsProvider = ({children}) => {
     setBgType("local");
     setImgUrl(url);
     
+    window.location.reload();
   }
 
   const value = {

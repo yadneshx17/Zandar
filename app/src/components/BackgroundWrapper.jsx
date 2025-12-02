@@ -1,5 +1,5 @@
 import React, {useEffect, useContext, useState} from "react";
-import {SettingsContext} from "./SettingsProvider";
+import {SettingsContext} from "../contexts/SettingsProvider";
 import { getImageBlob } from "../services/db/imageStore";
 
 const BackgroundWrapper = () => {
