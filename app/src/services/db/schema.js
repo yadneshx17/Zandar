@@ -8,36 +8,40 @@ export const db = new Dexie("ZandarDB");
  */
 db.version(1).stores({
   pages: "++id, uuid, title, createdAt, updatedAt",
-  widgets: "++id, uuid, pageId, columnId, order, title, collapsed, createdAt, updatedAt",
-  links: "++id, uuid, widgetId, order, name, url, createdAt, updatedAt"
+  widgets:
+    "++id, uuid, pageId, columnId, order, title, collapsed, createdAt, updatedAt",
+  links: "++id, uuid, widgetId, order, name, url, createdAt, updatedAt",
 });
 
 // version 2 - add images store
 db.version(2).stores({
-  image: "" 
-})
+  image: "",
+});
+
+db.version(3).stores({
+  pages: "++id, uuid, title, order, createdAt, updatedAt",
+});
 
 /**
  * Future example migration
  * db.version(2).stores({ ... }).upgrade(tx => { migrate data })
  */
 
-
 // remove later
 // Populating the Defaults.
 db.on("populate", async () => {
-
   const now = new Date().toISOString();
 
   // Create default page
   const pageId = await db.pages.add({
     uuid: "c95f9bcf-2a55-4784-8a9b-637cbe8efba0",
     title: "Home",
+    order: 0,
     createdAt: now,
-    updatedAt: now
+    updatedAt: now,
   });
 
-  // Testing multiple pages 
+  // Testing multiple pages
   // // Create default page
   // const pageId = await db.pages.bulkAdd([
   //   {
@@ -93,7 +97,7 @@ db.on("populate", async () => {
   //     title: "Home",
   //     createdAt: now,
   //     updatedAt: now
-  //   },  
+  //   },
   //   {
   //     uuid: uuidv4(),
   //     title: "Home",
@@ -151,7 +155,7 @@ db.on("populate", async () => {
   // ]);
 
   // Default widget
-  
+
   await db.widgets.bulkAdd([
     {
       uuid: uuidv4(),
@@ -162,7 +166,7 @@ db.on("populate", async () => {
       order: 0,
       collapsed: false,
       createdAt: now,
-      updatedAt: now
+      updatedAt: now,
     },
     {
       uuid: uuidv4(),
@@ -173,7 +177,7 @@ db.on("populate", async () => {
       order: 0,
       collapsed: false,
       createdAt: now,
-      updatedAt: now
+      updatedAt: now,
     },
     {
       uuid: uuidv4(),
@@ -184,9 +188,9 @@ db.on("populate", async () => {
       order: 0,
       collapsed: false,
       createdAt: now,
-      updatedAt: now
-    }
-  ])
+      updatedAt: now,
+    },
+  ]);
 
   // Default links
   await db.links.bulkAdd([
@@ -198,7 +202,7 @@ db.on("populate", async () => {
       widgetId: 1,
       order: 0,
       createdAt: now,
-      updatedAt: now
+      updatedAt: now,
     },
     {
       uuid: uuidv4(),
@@ -208,7 +212,7 @@ db.on("populate", async () => {
       widgetId: 1,
       order: 1,
       createdAt: now,
-      updatedAt: now
+      updatedAt: now,
     },
     {
       uuid: uuidv4(),
@@ -218,7 +222,7 @@ db.on("populate", async () => {
       widgetId: 2,
       order: 0,
       createdAt: now,
-      updatedAt: now
+      updatedAt: now,
     },
     {
       uuid: uuidv4(),
@@ -228,7 +232,7 @@ db.on("populate", async () => {
       widgetId: 2,
       order: 1,
       createdAt: now,
-      updatedAt: now
+      updatedAt: now,
     },
     {
       uuid: uuidv4(),
@@ -238,7 +242,7 @@ db.on("populate", async () => {
       widgetId: 2,
       order: 2,
       createdAt: now,
-      updatedAt: now
+      updatedAt: now,
     },
     {
       uuid: uuidv4(),
@@ -248,7 +252,7 @@ db.on("populate", async () => {
       widgetId: 3,
       order: 0,
       createdAt: now,
-      updatedAt: now  
+      updatedAt: now,
     },
     {
       uuid: uuidv4(),
@@ -258,7 +262,7 @@ db.on("populate", async () => {
       widgetId: 3,
       order: 1,
       createdAt: now,
-      updatedAt: now  
+      updatedAt: now,
     },
     {
       uuid: uuidv4(),
@@ -268,7 +272,7 @@ db.on("populate", async () => {
       widgetId: 3,
       order: 2,
       createdAt: now,
-      updatedAt: now  
+      updatedAt: now,
     },
   ]);
 });
