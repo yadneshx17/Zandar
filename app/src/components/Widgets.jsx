@@ -6,6 +6,7 @@ import {
   ChevronDown,
   ChevronRight,
   AlertTriangle,
+  Edit3,
 } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 import { db } from "../services/db/schema.js";
@@ -14,7 +15,9 @@ import { SettingsContext } from "../contexts/SettingsProvider.jsx";
 const Widget = ({ widget, widgets, setWidgets }) => {
   const [showAddLink, setShowAddLink] = useState(false);
   const [editingWidgetTitle, setEditingWidgetTitle] = useState(false);
-  const [isHovered, setIsHovered] = useState(false); // ADD THIS
+  const [isHovered, setIsHovered] = useState(false);
+  const [editingLink, setEditingLink] = useState(null);
+  const [editLinkData, setEditLinkData] = useState({ name: "", url: "" });
 
   const [draggedLink, setDraggedLink] = useState(null);
   const [dragOverLink, setDragOverLink] = useState(null);
@@ -23,6 +26,23 @@ const Widget = ({ widget, widgets, setWidgets }) => {
   const now = () => new Date().toISOString();
 
   const { widgetOpacity } = useContext(SettingsContext);
+
+  function normalizeURL(url) {
+    if (!url) return "";
+    if (url.startsWith("http://") || url.startsWith("https://")) return url;
+    return `https://${url}`;
+  }
+  
+  const saveEditedLink = async (id) => {
+    await db.links.update(id, {
+      name: editLinkData.name,
+      url: normalizeURL(editLinkData.url),
+      updatedAt: now()
+    });
+
+    setEditingLink(null);
+    setEditLinkData({ name: "", url: "" });
+  };
 
   const widgetStyle = {
     backgroundColor: `rgba(23, 23, 23, ${widgetOpacity / 100})`,
@@ -309,7 +329,7 @@ const Widget = ({ widget, widgets, setWidgets }) => {
             )}
           </div>
 
-          {/* Widget Actions - USE isHovered STATE */}
+          {/* Widget Actions */}
           <div
             className={`flex gap-1 transition-opacity duration-200 ${isHovered ? "opacity-100" : "opacity-0"}`}
           >
@@ -328,55 +348,119 @@ const Widget = ({ widget, widgets, setWidgets }) => {
           </div>
         </div>
 
+        {/* Links */}
         {/* Widget Content ( Links ) */}
         {!widget.collapsed && (
           <div className="">
             {sortedLinks.map((l) => {
               const isDragging = draggedLink?.id === l.id;
               const isDropTarget = dragOverLink === l.id;
-
+              const isEditingLink = editingLink === l.id;
               return (
-                <div
-                  key={l.id}
-                  draggable
-                  onDragStart={(e) => handleLinkDragStart(e, l)}
-                  onDragEnd={handleLinkDragEnd}
-                  onDragOver={(e) => handleLinkDragOver(e, l)}
-                  onDrop={(e) => handleLinkDrop(e, l)}
-                  className={`
-                    group/link flex items-center gap-3 my-1 rounded-lg
-                    hover:text-white  hover:underline cursor-move transition-all
-                    text-sm
-                    ${isDragging ? "opacity-30 scale-95" : "opacity-100 scale-100"}
-                    ${isDropTarget ? "bg-[#27272a] p-1" : ""}
-                    `}
-                  onMouseDown={() => setIsMouseDown(l.id)}
-                  onMouseUp={() => setIsMouseDown(null)}
-                  onMouseLeave={() => setIsMouseDown(null)}
-                >
-                  <img
-                    src={`https://www.google.com/s2/favicons?domain=${l.url}&sz=32`}
-                    className="w-4 h-4 flex-shrink-0"
-                    alt=""
-                    onError={(e) => (e.target.style.display = "none")}
-                  />
-                  <a
-                    href={l.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`flex-1 text-gray-300 hover:text-white truncate transition-all
-                    ${isMouseDown === l.id ? "scale-[0.97] opacity-70" : "scale-100 opacity-100"}
-                    `}
-                  >
-                    {l.name}
-                  </a>
-                  <button
-                    onClick={() => deleteLink(l.id)}
-                    className="opacity-0 group-hover/link:opacity-100 text-gray-500 hover:text-red-400 p-1 rounded transition-all"
-                  >
-                    <Trash2 size={14} />
-                  </button>
-                </div>
+                <>
+                  {isEditingLink ? (
+                    <div className="bg-[#27272a] p-5 rounded-lg space-y-2 mt-2">
+                      <input
+                        placeholder="Name"
+                        className="w-full bg-[#18181b] text-white border border-gray-700 px-3 py-2 rounded-lg text-sm focus:outline-none focus:border-gray-600 placeholder-gray-600"
+                        value={editLinkData.name}
+                        onChange={(e) => {
+                          setEditLinkData({
+                            ...editLinkData,
+                            name: e.target.value,
+                          });
+                        }}
+                        autoFocus
+                      />
+                      <input
+                        placeholder="URL"
+                        className="w-full bg-[#18181b] text-white border border-gray-700 px-3 py-2 rounded-lg text-sm focus:outline-none focus:border-gray-600 placeholder-gray-600"
+                        value={editLinkData.url}
+                        onChange={(e) =>
+                          setEditLinkData({
+                            ...editLinkData,
+                            url: e.target.value,
+                          })
+                        }
+                      />
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => saveEditedLink(l.id)}
+                          className="flex-1 bg-white text-black px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors"
+                        >
+                          Save
+                        </button>
+                        <button
+                          onClick={() => {
+                            setEditingLink(null);
+                            setEditLinkData({ name: "", url: "" });
+                          }}
+                          className="px-3 py-2 bg-[#18181b] text-gray-400 rounded-lg text-sm hover:bg-[#27272a] hover:text-gray-300 transition-colors"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div
+                      key={l.id}
+                      draggable
+                      onDragStart={(e) => handleLinkDragStart(e, l)}
+                      onDragEnd={handleLinkDragEnd}
+                      onDragOver={(e) => handleLinkDragOver(e, l)}
+                      onDrop={(e) => handleLinkDrop(e, l)}
+                      className={`
+                        group/link flex items-center gap-3 my-1 rounded-lg
+                        hover:text-white  hover:underline cursor-move transition-all
+                        text-sm
+                        ${isDragging ? "opacity-30 scale-95" : "opacity-100 scale-100"}
+                        ${isDropTarget ? "bg-[#27272a] p-1" : ""}
+                        `}
+                      onMouseDown={() => setIsMouseDown(l.id)}
+                      onMouseUp={() => setIsMouseDown(null)}
+                      onMouseLeave={() => setIsMouseDown(null)}
+                    >
+                      <img
+                        src={`https://www.google.com/s2/favicons?domain=${l.url}&sz=32`}
+                        className="w-4 h-4 flex-shrink-0"
+                        alt=""
+                        onError={(e) => (e.target.style.display = "none")}
+                      />
+                      <a
+                        href={l.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`flex-1 text-gray-300 hover:text-white truncate transition-all
+                        ${isMouseDown === l.id && !editingLink ? "scale-[0.97] opacity-70" : "scale-100 opacity-100"}
+                        `}
+                      >
+                        {l.name}
+                      </a>
+
+                      {/* Action button for links */}
+                      <div
+                        className={`group-hover/link:opacity-100 flex gap-1`}
+                      >
+                        <button
+                          onClick={() => {
+                            setEditingLink(l.id);
+                            setEditLinkData({ name: l.name, url: l.url });
+                          }}
+                          className="opacity-0 group-hover/link:opacity-100 text-gray-500 hover:text-white p-1 rounded transition-all"
+                        >
+                          <Edit2 size={14} />
+                        </button>
+
+                        <button
+                          onClick={() => deleteLink(l.id)}
+                          className="opacity-0 group-hover/link:opacity-100 text-gray-500 hover:text-red-400 p-1 rounded transition-all"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </>
               );
             })}
 
