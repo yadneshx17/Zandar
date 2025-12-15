@@ -2,10 +2,15 @@ import express from "express";
 import fetch from "node-fetch";
 import cors from "cors";
 import * as cheerio from "cheerio";
+import dotenv from "dotenv";
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+dotenv.config();
+
+const PORT = process.env.PORT || 3001;
 
 app.post("/api/preview", async (req, res) => {
   const { url } = req.body;
@@ -67,6 +72,6 @@ app.post("/api/preview", async (req, res) => {
   }
 });
 
-app.listen(3001, () => {
-  console.log("Preview server running on http://localhost:3001");
+app.listen(PORT, () => {
+  console.log(`Backend running on ${PORT}`);
 });

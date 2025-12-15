@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 import { db } from "../services/db/schema.js";
+import dotenv from "dotenv";
 import { SettingsContext } from "../contexts/SettingsProvider.jsx";
 
 const Widget = ({ widget, widgets, setWidgets }) => {
@@ -20,7 +21,7 @@ const Widget = ({ widget, widgets, setWidgets }) => {
   const [editingLink, setEditingLink] = useState(null);
   const [editLinkData, setEditLinkData] = useState({ name: "", url: "" });
   const [newLink, setNewLink] = useState({ name: "", url: "" });
-  const [fetchedTitle, setFetchedTitle] = useState("");
+  // const [fetchedTitle, setFetchedTitle] = useState("");
   const [isFetchingTitle, setIsFetchingTitle] = useState(false);
 
   const [confirmDialog, setConfirmDialog] = useState({
@@ -35,6 +36,8 @@ const Widget = ({ widget, widgets, setWidgets }) => {
   const [isMouseDown, setIsMouseDown] = useState(null);
 
   const now = () => new Date().toISOString();
+
+  const API_BASE = import.meta.env.VITE_BACKEND_API_URL;
 
   const { widgetOpacity } = useContext(SettingsContext);
 
@@ -107,28 +110,6 @@ const Widget = ({ widget, widgets, setWidgets }) => {
     setShowAddLink(false);
   };
 
-  // const handleUrlPaste = async (url) => {
-  //   setNewLink((prev) => ({ ...prev, url }));
-
-  //   try {
-  //     const res = await fetch("http://localhost:3001/api/preview", {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify({ url }),
-  //     });
-
-  //     const data = await res.json();
-  //     setFetchedTitle(data.title);
-
-  //     if (data.title) {
-  //       setNewLink((prev) => ({ ...prev, name: data.title }));
-  //     }
-  //     console.log(fetchedTitle, "fetched title");
-  //   } catch {
-  //     console.log("Nhi HUA TITLE FETCH");
-  //   }
-  // };
-
   useEffect(() => {
     if (!newLink.url) return;
 
@@ -139,7 +120,7 @@ const Widget = ({ widget, widgets, setWidgets }) => {
         setIsFetchingTitle(true);
 
         // backend endpoint (recommended)
-        const res = await fetch("http://localhost:3001/api/preview", {
+        const res = await fetch(`${API_BASE}/api/preview`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ url: newLink.url }),
@@ -147,7 +128,7 @@ const Widget = ({ widget, widgets, setWidgets }) => {
         });
 
         const data = await res.json();
-        setFetchedTitle(data.title);
+        // setFetchedTitle(data.title);
 
         // only autofill if user hasn't typed name/title
         if (data.title && !newLink.name) {
