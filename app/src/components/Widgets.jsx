@@ -562,12 +562,15 @@ const Widget = ({ widget, widgets, setWidgets }) => {
                       onMouseUp={() => setIsMouseDown(null)}
                       onMouseLeave={() => setIsMouseDown(null)}
                     >
+                      {/* Add this as a toggle in Settings */}
+                      {/* <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center">*/}
                       <img
                         src={`https://www.google.com/s2/favicons?domain=${l.url}&sz=32`}
-                        className="w-4 h-4 flex-shrink-0"
+                        className="w-4 h-4 flex-shrink-0 rounded"
                         alt=""
                         onError={(e) => (e.target.style.display = "none")}
                       />
+                      {/* </div>*/}
                       <a
                         href={l.url}
                         target="_blank"

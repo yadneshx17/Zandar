@@ -5,6 +5,7 @@ import { db } from "../services/db/schema.js";
 import { useLiveQuery } from "dexie-react-hooks";
 import SettingsPanel from "./SettingsPanel/SettingsPanel";
 import { SettingsContext } from "../contexts/SettingsProvider";
+import SearchGlobal from "./SearchGlobal.jsx";
 
 export default function NavBar({ activeTab, setActiveTab }) {
   const dbPages = useLiveQuery(() => db.pages.toArray(), []);
@@ -169,8 +170,21 @@ export default function NavBar({ activeTab, setActiveTab }) {
         setNewPageDialog(false);
       }
     };
+
+    const handleSearchShortcut = (e) => {
+      // Ctrl+K or Cmd+K
+      if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+        e.preventDefault();
+        setSearchOpen((prev) => !prev);
+      }
+    };
+
     window.addEventListener("keydown", handleEscape);
-    return () => window.removeEventListener("keydown", handleEscape);
+    window.addEventListener("keydown", handleSearchShortcut);
+    return () => {
+      window.removeEventListener("keydown", handleEscape);
+      window.removeEventListener("keydown", handleSearchShortcut);
+    };
   }, []);
 
   const SortedPage = [...pages].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
@@ -248,7 +262,9 @@ export default function NavBar({ activeTab, setActiveTab }) {
                     <div className="p-2 max-h-[400px] overflow-y-auto">
                       {SortedPage.map((page, index) => {
                         const isDragging = draggedPage?.index === index;
-                        const isDropTarget = dragOverIndex === index && draggedPage?.index !== index;
+                        const isDropTarget =
+                          dragOverIndex === index &&
+                          draggedPage?.index !== index;
 
                         return (
                           <button
@@ -266,7 +282,8 @@ export default function NavBar({ activeTab, setActiveTab }) {
                             className={`
                             w-full group/item relative flex items-center justify-between
                             py-2 px-3 mb-1 rounded-lg transition-all duration-200
-                            ${activeTab === page.uuid
+                            ${
+                              activeTab === page.uuid
                                 ? "bg-gradient-to-b from-white/[0.12] to-white/[0.08] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.15),inset_0_-1px_0_rgba(0,0,0,0.2),0_4px_16px_rgba(0,0,0,0.4)]"
                                 : "text-white/50 hover:bg-white/[0.03] hover:text-white hover:shadow-[0_2px_8px_rgba(0,0,0,0.2)]"
                             }
@@ -302,7 +319,10 @@ export default function NavBar({ activeTab, setActiveTab }) {
                                       (p) => p.id === page.id,
                                     );
                                     if (currentPage) {
-                                      updatePageTitle(page.id, currentPage.title);
+                                      updatePageTitle(
+                                        page.id,
+                                        currentPage.title,
+                                      );
                                     }
                                     setEditingPageTitleById(null);
                                   }
@@ -324,7 +344,7 @@ export default function NavBar({ activeTab, setActiveTab }) {
                                 {page.title}
                               </span>
                             )}
-  
+
                             {/* Action Buttons - INSIDE button element */}
                             {!editingPageTitleById && (
                               <div className="flex items-center gap-1 opacity-0 group-hover/item:opacity-100 transition-opacity">
@@ -338,7 +358,7 @@ export default function NavBar({ activeTab, setActiveTab }) {
                                 >
                                   <Pencil size={14} />
                                 </button>
-  
+
                                 <button
                                   onClick={(e) => {
                                     e.stopPropagation();
@@ -352,7 +372,7 @@ export default function NavBar({ activeTab, setActiveTab }) {
                               </div>
                             )}
                           </button>
-                        )
+                        );
                       })}
                     </div>
 
@@ -417,7 +437,9 @@ export default function NavBar({ activeTab, setActiveTab }) {
 
           {/* Right side - Icons */}
           <div className="flex items-center gap-4 px-1">
-            <h2 className={`text-white text-sm font-sans font-bold rounded-xl px-3 py-1 ${bgType == "local" ? "shadow-[0_0_5px_rgba(255,255,255,0.3)]" : "border border-white font-instrument"}`}>
+            <h2
+              className={`text-white text-sm font-sans font-bold rounded-xl px-3 py-1 ${bgType == "local" ? "shadow-[0_0_5px_rgba(255,255,255,0.3)]" : "border border-white font-instrument"}`}
+            >
               Beta
             </h2>
             <div className="flex items-center gap-2">
@@ -454,34 +476,8 @@ export default function NavBar({ activeTab, setActiveTab }) {
         </div>
       </nav>
 
-      {/* Search Modal */}
-      {searchOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50"
-          onClick={() => setSearchOpen(false)}
-        >
-          <div
-            className="bg-[#1a1a1a] border border-gray-700 rounded-lg shadow-2xl w-[500px] p-4"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center gap-3 pb-3 border-b border-gray-700">
-              <Search className="w-5 h-5 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search..."
-                autoFocus
-                className="flex-1 bg-transparent text-white outline-none text-lg placeholder-gray-500"
-              />
-              <button
-                onClick={() => setSearchOpen(false)}
-                className="text-gray-400 hover:text-white transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Search */}
+      {searchOpen && <SearchGlobal setSearchOpen={setSearchOpen} />}
 
       {/* New Page Dialog */}
       {newPageDialog && (

@@ -89,18 +89,18 @@ const SettingsPanel = ({ isOpen, onClose }) => {
             </button>
           </div>
 
-          <div className="px-4 py-2">
+          {/* <div className="px-4 py-2">
             <SearchBar
               // value={searchQuery}
               // onChange={setSearchQuery}
               placeholder="Search Settings"
-            />
+            />  
             {searchQuery && (
               <div className="mt-4 text-white">
                 Searching for: {searchQuery}
               </div>
             )}
-          </div>
+          </div>*/}
         </div>
 
         {/* Content */}

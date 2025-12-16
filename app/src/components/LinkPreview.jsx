@@ -32,7 +32,6 @@ const LinkPreview = ({ title, iconUrl, url, isVisible, onClick }) => {
             {title || "No Title"}
           </span>
         </div>
-
         <div className="text-sm font-sans text-gray-500 truncate max-w-[45%] text-right">
           {displayUrl}
         </div>
