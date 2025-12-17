@@ -10,7 +10,6 @@ import {
 } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 import { db } from "../services/db/schema.js";
-import dotenv from "dotenv";
 import { SettingsContext } from "../contexts/SettingsProvider.jsx";
 import LinkPreview from "./LinkPreview.jsx";
 

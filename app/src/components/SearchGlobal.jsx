@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from "react";
 import { Search, X } from "lucide-react";
 import { db } from "../services/db/schema.js";
 import { useLiveQuery } from "dexie-react-hooks";
+import { Command } from "lucide-react";
 
 export default function SearchGlobal({ setSearchOpen }) {
   const inputRef = useRef(null);
@@ -108,7 +109,7 @@ export default function SearchGlobal({ setSearchOpen }) {
 
   return (
     <div
-      className={`fixed inset-0 bg-black/60 backdrop-blur-sm flex items-start justify-center pt-24 z-50 transition-opacity duration-200 ${
+      className={`fixed inset-0 bg-black/60 backdrop-blur-sm flex flex-col items-center pt-28 z-50 transition-opacity duration-200 ${
         isMounted ? "opacity-100" : "opacity-0"
       }`}
       onClick={() => {
@@ -116,15 +117,16 @@ export default function SearchGlobal({ setSearchOpen }) {
         setSearchQuery("");
       }}
     >
+      {/* Search Bar*/}
       <div
-        className={`bg-[#1a1a1a] border border-gray-700 rounded-lg shadow-2xl w-full max-w-2xl transform transition-all duration-200 ${
+        className={`bg-[#161616] border border-white/20 rounded-xl shadow-[0_10px_20px_rgba(0,0,0,0.5)] w-full max-w-2xl transform transition-all duration-200 ${
           isMounted ? "translate-y-0 opacity-100" : "-translate-y-4 opacity-0"
         }`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Search Input Box */}
-        <div className="flex items-center gap-3 p-4 border-b border-gray-700">
-          <Search className="w-5 h-5 text-gray-400 flex-shrink-0" />
+        <div className="flex items-center gap-3 p-4 border-gray-700 ">
+          <Search className="w-5 h-5 text-white flex-shrink-0" />
           <input
             ref={inputRef}
             type="text"
@@ -132,9 +134,10 @@ export default function SearchGlobal({ setSearchOpen }) {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             autoFocus
-            className="flex-1 bg-transparent text-white outline-none text-lg placeholder-gray-500"
+            className="flex-1 bg-transparent text-white outline-none text-lg placeholder-neutral-500"
           />
-          <button
+
+          {/* <button
             onClick={() => {
               setSearchOpen(false);
               setSearchQuery("");
@@ -143,71 +146,78 @@ export default function SearchGlobal({ setSearchOpen }) {
             aria-label="Close search"
           >
             <X className="w-5 h-5" />
-          </button>
+          </button>*/}
+
+          <div className="flex items-center gap-0.5 bg-[#808080] text-black shadow-[0_2px_1px_rgba(0,0,0,0.5),0_1px_5px_rgba(0,0,0,0.4)] px-1.5 rounded-md">
+            <Command size={13} /> K
+          </div>
         </div>
+      </div>
 
-        {/* Results Secction*/}
-        <div className="max-h-96 overflow-y-auto">
-          {searchQuery.trim() && filteredLinks.length > 0 && (
-            <div className="p-2">
-              {/* Section Header */}
-              <div className="px-3 py-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                Bookmarks
-              </div>
+      {/* Results Secction*/}
+      <div
+        className={`bg-[#161616] w-full max-w-2xl  transform transition-all duration-200 mt-2 rounded-lg max-h-96 overflow-y-auto`}
+      >
+        {searchQuery.trim() && filteredLinks.length > 0 && (
+          <div className="p-2">
+            {/* Section Header */}
+            {/* add when more search types */}
+            {/* <div className="px-3 py-2 text-sm font-sans text-neutral-300">
+              Bookmarks
+            </div>*/}
 
-              {/* Results List */}
-              <div ref={resultsRef} className="space-y-1">
-                {filteredLinks.map((link, index) => (
-                  <button
-                    key={link.id}
-                    onClick={() => handleLinkClick(link)}
-                    onMouseEnter={() => setSelectedIndex(index)}
-                    className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-left group ${
-                      selectedIndex === index
-                        ? "bg-[#27272a] text-white"
-                        : "text-gray-300 hover:bg-[#222222] hover:text-white"
-                    }`}
-                  >
-                    <img
-                      src={getFaviconUrl(link.url)}
-                      className="w-8 h-8 flex-shrink-0 rounded"
-                      alt=""
-                      onError={(e) => {
-                        e.target.style.display = "none";
-                      }}
-                    />
-                    <div className="flex-1 min-w-0">
-                      <div className="font-medium text-sm truncate">
-                        {link.name || "Untitled"}
-                      </div>
-                      <div className="text-xs text-gray-500 truncate mt-0.5">
-                        {link.url}
-                      </div>
+            {/* Results List */}
+            <div ref={resultsRef} className="space-y-1 pb-1">
+              {filteredLinks.map((link, index) => (
+                <button
+                  key={link.id}
+                  onClick={() => handleLinkClick(link)}
+                  onMouseEnter={() => setSelectedIndex(index)}
+                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-left group ${
+                    selectedIndex === index
+                      ? "bg-[#27272a] text-white"
+                      : "text-gray-300 hover:bg-[#222222] hover:text-white"
+                  }`}
+                >
+                  <img
+                    src={getFaviconUrl(link.url)}
+                    className="w-8 h-8 flex-shrink-0 rounded"
+                    alt=""
+                    onError={(e) => {
+                      e.target.style.display = "none";
+                    }}
+                  />
+                  <div className="flex-1 min-w-0">
+                    <div className="font-medium text-sm truncate">
+                      {link.name || "Untitled"}
                     </div>
-                  </button>
-                ))}
-              </div>
+                    <div className="text-xs text-gray-500 truncate mt-0.5">
+                      {link.url}
+                    </div>
+                  </div>
+                </button>
+              ))}
             </div>
-          )}
+          </div>
+        )}
 
-          {/* Empty State */}
-          {searchQuery.trim() && filteredLinks.length === 0 && (
-            <div className="p-8 text-center">
-              <div className="text-gray-400 text-sm">
-                No matching bookmarks found
-              </div>
+        {/* Empty State */}
+        {searchQuery.trim() && filteredLinks.length === 0 && (
+          <div className="p-8 text-center">
+            <div className="text-gray-400 text-sm">
+              No matching bookmarks found
             </div>
-          )}
+          </div>
+        )}
 
-          {/* Initial State - No Query */}
-          {!searchQuery.trim() && (
-            <div className="p-8 text-center">
-              <div className="text-gray-500 text-sm">
-                Start typing to search your bookmarks...
-              </div>
+        {/* Initial State - No Query */}
+        {/* {searchQuery.trim() && (
+          <div className="p-8 text-center">
+            <div className="text-neutral-400 text-base">
+              Start typing to search your bookmarks...
             </div>
-          )}
-        </div>
+          </div>
+        )}*/}
       </div>
     </div>
   );

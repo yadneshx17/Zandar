@@ -7,6 +7,8 @@ import {
   Pencil,
   X,
   Github,
+  Database,
+  Images,
   Twitter,
   Youtube,
   Bot,
@@ -22,11 +24,12 @@ import SearchBar from "../SearchBar";
 import BackupManager from "./BackupManager.jsx";
 import { db } from "../../services/db/schema.js";
 import { SettingsContext } from "../../contexts/SettingsProvider";
+import { Broom } from "@phosphor-icons/react";
 
 const PANEL_WIDTH = "360px";
 
 const SettingsPanel = ({ isOpen, onClose }) => {
-  const [searchQuery, setSearchQuery] = useState("");
+  // const [searchQuery, setSearchQuery] = useState("");
 
   const fileInputRef = useRef(null);
   const {
@@ -69,24 +72,25 @@ const SettingsPanel = ({ isOpen, onClose }) => {
       {/* Settings Panel - Slides from RIGHT */}
       <div
         className={`
-          fixed top-0 right-0 h-full bg-neutral-900 border-l border-neutral-700 z-50
-          shadow-[-4px_0_20px_rgba(0,0,0,0.5)] overflow-y-auto
-          transition-transform duration-300 ease-out
+          fixed top-0 right-0 h-full bg-[#1A1A1A] border-l border-neutral-700 z-50
+          shadow-[-4px_0_20 px_rgba(0,0,0,0.5)] overflow-hidden
+          transition-transform duration-300 ease-out flex flex-col
           ${settingsOpen ? "translate-x-0" : "translate-x-full"}
         `}
         style={{ width: PANEL_WIDTH }}
       >
         {/* Header */}
-        <div className="sticky top-0 bg-[#1a1a1a] border-b border-neutral-700 z-10">
-          <div className="flex items-center justify-between px-4 py-3">
-            <h2 className="text-base font-semibold text-white">Settings</h2>
-            <button
-              onClick={() => setSettingsOpen(false)}
-              className="text-neutral-400 hover:text-white hover:bg-neutral-800 p-1.5 rounded transition-all"
-              aria-label="Close settings"
-            >
-              <X size={16} />
-            </button>
+        <div className="sticky top-0 bg-[#161616] border-b border-neutral-700 z-20">          <div className="flex items-center justify-between px-4 py-3">
+          <div className="flex items-center justify-between py-1 w-full">
+                <h2 className="text-lg text-white font-medium tracking-wide">Settings</h2>
+                <button
+                  onClick={() => setSettingsOpen(false)}
+                  className="text-white hover:text-neutral-400 p-1.5 rounded transition-all"
+                  aria-label="Close settings"
+                >
+                  <X size={16} />
+                </button>
+              </div>
           </div>
 
           {/* <div className="px-4 py-2">
@@ -94,7 +98,7 @@ const SettingsPanel = ({ isOpen, onClose }) => {
               // value={searchQuery}
               // onChange={setSearchQuery}
               placeholder="Search Settings"
-            />  
+            />
             {searchQuery && (
               <div className="mt-4 text-white">
                 Searching for: {searchQuery}
@@ -104,43 +108,42 @@ const SettingsPanel = ({ isOpen, onClose }) => {
         </div>
 
         {/* Content */}
-        <div className="p-4 space-y-6">
+        <div className="flex-1 p-4 space-y-6 overflow-y-auto">
           {/* Background Media */}
           <div>
-            
-            <div className="flex items-center mb-3">
-              <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider">
-                Appearance
-              </h3>
+            <div className="flex items-center mb-1">
+              <h3 className="text-base text-white">Appearance</h3>
             </div>
 
-            <div className="space-y-4 border-t border-t-neutral-800 pt-4">
-              <div className="text-xs text-gray-400 font-medium">SOURCE</div>
-              <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-4 pt-4">
+              <div className="text-sm text-[#A4A4A4] tracking-wide">
+                Background
+              </div>
+              <div className="grid grid-cols-2 gap-4 h-[88px]">
                 <button
                   onClick={() => {
                     (setBgType("default"),
                       localStorage.setItem("bgType", "default"));
                   }}
-                  className={`flex flex-col items-center justify-center p-3 rounded-lg border transition-all ${
+                  className={`flex flex-col items-center justify-center p-3 rounded-lg border border-[#8E8E8E]/25 shadow-[0_2px_5px_rgba(0,0,0,0.4)] transition-all ${
                     bgType === "default"
                       ? "bg-neutral-800 border-neutral-600 text-white shadow"
-                      : "border-neutral-800 text-gray-500 hover:bg-neutral-900"
+                      : "border-neutral-800 text-[#8E8E8E] bg-[#212020] hover:bg-neutral-900"
                   }`}
                 >
-                  <ImageIcon size={20} className="mb-2" />
-                  <span className="text-xs font-medium">Default</span>
+                  <Broom size={26} className="mb-2" />
+                  <span className="text-[13px]">Default</span>
                 </button>
 
                 <button
                   onClick={() => setBgType("local")}
-                  className={`flex flex-col items-center justify-center p-3 rounded-lg border transition-all ${
+                  className={`flex flex-col items-center justify-center p-3 rounded-lg border border-[#8E8E8E]/25 shadow-[0_2px_5px_rgba(0,0,0,0.4)] transition-all ${
                     bgType === "local"
                       ? "bg-neutral-800 border-neutral-600 text-white shadow"
-                      : "border-neutral-800 text-gray-500 hover:bg-neutral-900"
+                      : "border-neutral-800 text-[#8E8E8E] bg-[#212020] hover:bg-neutral-900"
                   }`}
                 >
-                  <FileVideo size={20} className="mb-2" />
+                  <Images size={26} className="mb-2" />
                   <span className="text-xs font-medium">Local File</span>
                 </button>
               </div>
@@ -150,14 +153,14 @@ const SettingsPanel = ({ isOpen, onClose }) => {
                   <div className="animate-in fade-in slide-in-from-top-2 duration-300">
                     <div
                       onClick={() => fileInputRef.current?.click()}
-                      className="border-2 border-dashed border-neutral-700 rounded-lg p-6 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-neutral-900/50 hover:border-neutral-500 transition-colors group"
+                      className="bg-[#212020] text-[#8E8E8E] border-2 border-dashed border-neutral-700 rounded-lg p-6 flex flex-col items-center justify-center text-center shadow-[0_1px_10px_rgba(0,0,0,0.4)] cursor-pointer hover:bg-neutral-900/50 hover:border-neutral-500 transition-colors group"
                     >
                       <Upload
-                        className="text-neutral-500 group-hover:text-neutral-300 mb-2 transition-colors"
+                        className="group-hover:text-neutral-300 mb-2 transition-colors"
                         size={24}
                       />
-                      <span className="text-sm text-neutral-400 group-hover:text-neutral-200">
-                        Click to upload Image/Video
+                      <span className="text-sm  group-hover:text-neutral-200">
+                        Tap to upload Image/Video
                       </span>
                       <input
                         type="file"
@@ -175,87 +178,125 @@ const SettingsPanel = ({ isOpen, onClose }) => {
                     )}
                   </div>
 
-                  <div className="bg-neutral-900/50 rounded-lg p-4 border border-neutral-800 space-y-4">
-                    <div className="text-xs text-gray-500 font-bold mb-2 select-none">
-                      BG ADJUSTMENTS
+                  <div className="pt-2">
+                    <div className="text-sm text-[#A4A4A4] tracking-wide">
+                      Bg Adjustments
                     </div>
-                    <div className="space-y-2">
-                      <div className="flex justify-between text-xs text-gray-400">
+
+                    <div className="space-y-3">
+                      <div className="flex items-center bg-[#1C1E1D] text-[14px] text-[@D2D1D1] border border-[#3E3D3D] rounded-md mt-2 p-2.5 px-3 w-[325px]">
                         <span>Blur</span>
-                        <span>{bgBlur}px</span>
+                        <span className="ml-16 mr-3">{bgBlur}%</span>
+                        <input
+                          type="range"
+                          min="0"
+                          max="20"
+                          value={bgBlur}
+                          onChange={(e) => setBgBlur(e.target.value)}
+                          className="w-full h-0.5 bg-[#D9D9D9] appearance-none cursor-pointer accent-white"
+                        />
                       </div>
-                      <input
-                        type="range"
-                        min="0"
-                        max="20"
-                        value={bgBlur}
-                        onChange={(e) => setBgBlur(e.target.value)}
-                        className="w-full h-1.5 bg-neutral-700 rounded-lg appearance-none cursor-pointer accent-white"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <div className="flex justify-between text-xs text-gray-400">
+
+                      <div className="flex items-center bg-[#1C1E1D] text-[14px] text-[@D2D1D1] border border-[#3E3D3D] rounded-md mt-2 p-2.5 px-3 w-[325px]">
                         <span>Brightness</span>
-                        <span>{bgBrightness}%</span>
+                        <span className="ml-5 mr-3">{bgBrightness}%</span>
+                        <input
+                          type="range"
+                          min="10"
+                          max="200"
+                          value={bgBrightness}
+                          onChange={(e) => setBgBrightness(e.target.value)}
+                          className="w-full h-0.5 bg-[#D9D9D9] appearance-none cursor-pointer accent-white"
+                        />
                       </div>
-                      <input
-                        type="range"
-                        min="10"
-                        max="200"
-                        value={bgBrightness}
-                        onChange={(e) => setBgBrightness(e.target.value)}
-                        className="w-full h-1.5 bg-neutral-700 rounded-lg appearance-none cursor-pointer accent-white"
-                      />
                     </div>
                   </div>
                 </>
               )}
             </div>
           </div>
-          
-          
-          <div className="flex items-center justify-between mb-3 pt-4 border-t border-neutral-800">
-            <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider select-none">
-              Interface
-            </h3>
-          </div>
 
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <div className="flex justify-between text-xs text-gray-400 select-none">
-                <span>Widget Opacity</span>
-                <span>{widgetOpacity}%</span>
-              </div>
-              <input
-                type="range"
-                min="20"
-                max="100"
-                value={widgetOpacity}
-                onChange={(e) => setWidgetOpacity(e.target.value)}
-                className="w-full h-1.5 bg-neutral-700 rounded-lg appearance-none cursor-pointer accent-white"
-              />
+          <div>
+            <div className="text-sm text-[#A4A4A4] tracking-wide border-t border-neutral-600 pt-4 mb-3">
+              Interface Adjustments
             </div>
             
-            {/* 
-            <div className="space-y-2">
-              <div className="flex justify-between text-xs text-gray-400 select-none">
-                <span>Navbar Opacity</span>
-                <span>{widgetOpacity}%</span>
+            <div className="space-y-4">
+              <div>
+                <p className="text-[13px] text-[#A4A4A4]">Widget</p>
+                <div className="space-y-3">
+                  
+                  {/* Logic for Blur*/}
+                  {/* <div className="flex items-center bg-[#1C1E1D] text-[14px] text-[@D2D1D1] border border-[#3E3D3D] rounded-md mt-2 p-2.5 px-3 w-full">
+                    <span>Blur</span>
+                    <span className="ml-14 mr-3">{bgBlur}%</span>
+                    <input
+                      type="range"
+                      min="0"
+                      max="20"
+                      value={bgBlur}
+                      onChange={(e) => setBgBlur(e.target.value)}
+                      className="w-full h-0.5 bg-[#D9D9D9] appearance-none cursor-pointer accent-white"
+                    />
+                  </div>*/}
+    
+                  <div className="flex items-center bg-[#1C1E1D] text-[14px] text-[@D2D1D1] border border-[#3E3D3D] rounded-md mt-2 p-2.5 px-3 w-[325px]">
+                    <span>Opacity</span>
+                    <span className="ml-11 mr-3">{widgetOpacity}%</span>
+                    <input
+                      type="range"
+                      min="20"
+                      max="100"
+                      value={widgetOpacity}
+                      onChange={(e) => setWidgetOpacity(e.target.value)}
+                      className="w-full h-0.5 bg-[#D9D9D9] appearance-none cursor-pointer accent-white"
+                    />
+                  </div>
+                </div>
               </div>
-              <input
-                type="range"
-                min="20"
-                max="100"
-                value={widgetOpacity}
-                onChange={(e) => setWidgetOpacity(e.target.value)}
-                className="w-full h-1.5 bg-neutral-700 rounded-lg appearance-none cursor-pointer accent-white"
-              />
-            </div>*/}
-            
+              
+              {/* <div>
+                <p className="text-[13px] text-[#A4A4A4]">Navbar</p>
+                <div className="space-y-3">
+                  <div className="flex items-center bg-[#1C1E1D] text-[14px] text-[@D2D1D1] border border-[#3E3D3D] rounded-md mt-2 p-2.5 px-3 w-full">
+                    <span>Blur</span>
+                    <span className="ml-14 mr-3">{bgBlur}%</span>
+                    <input
+                      type="range"
+                      min="0"
+                      max="20"
+                      value={bgBlur}
+                      onChange={(e) => setBgBlur(e.target.value)}
+                      className="w-full h-0.5 bg-[#D9D9D9] appearance-none cursor-pointer accent-white"
+                    />
+                  </div>
+    
+                  <div className="flex items-center bg-[#1C1E1D] text-[14px] text-[@D2D1D1] border border-[#3E3D3D] rounded-md mt-2 p-2.5 px-3 w-full">
+                    <span>Opacity</span>
+                    <span className="ml-14 mr-3">{widgetOpacity}%</span>
+                    <input
+                      type="range"
+                      min="20"
+                      max="100"
+                      value={widgetOpacity}
+                      onChange={(e) => setWidgetOpacity(e.target.value)}
+                      className="w-full h-0.5 bg-[#D9D9D9] appearance-none cursor-pointer accent-white"
+                    />
+                  </div>
+                </div>
+              </div>*/}
+            </div>
           </div>
 
-          <BackupManager />
+          <div className="border-t border-neutral-600">
+            <div className="flex items-center mt-3 gap-1 mb-3">
+              <Database size={16} className="text-gray-400" />
+              <h3 className="text-base text-white">Backup & Restore</h3>
+            </div>
+            <BackupManager />
 
+          </div>
+          
           {/* Horizontal divider Line */}
           <div className="h-0.5 w-full rounded-full bg-[#2A2A2C]"></div>
 

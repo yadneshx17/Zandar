@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@phosphor-icons/react": "^2.1.10",
     "cheerio": "^1.1.2",
     "cors": "^2.8.5",
     "dexie": "^4.2.1",

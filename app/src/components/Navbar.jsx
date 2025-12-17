@@ -1,11 +1,21 @@
 import React, { useState, useEffect, useContext } from "react";
-import { X, Pencil, Plus, Search, Edit3, Menu, Settings2 } from "lucide-react";
+import {
+  X,
+  Pencil,
+  Plus,
+  Search,
+  Edit3,
+  Menu,
+  Settings2,
+  Command,
+} from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 import { db } from "../services/db/schema.js";
 import { useLiveQuery } from "dexie-react-hooks";
 import SettingsPanel from "./SettingsPanel/SettingsPanel";
 import { SettingsContext } from "../contexts/SettingsProvider";
 import SearchGlobal from "./SearchGlobal.jsx";
+import { CommandIcon } from "@phosphor-icons/react";
 
 export default function NavBar({ activeTab, setActiveTab }) {
   const dbPages = useLiveQuery(() => db.pages.toArray(), []);
@@ -194,7 +204,7 @@ export default function NavBar({ activeTab, setActiveTab }) {
       <nav
         className="border-gray-200"
         style={{
-          backgroundColor: `rgba(10, 10, 10, ${Math.max(0.8, widgetOpacity / 100)})`,
+          backgroundColor: `rgba(22, 22, 22, ${Math.max(0.8, widgetOpacity / 100)})`,
         }}
       >
         <div className="flex items-center justify-between h-12 px-4 font-sans">
@@ -218,7 +228,7 @@ export default function NavBar({ activeTab, setActiveTab }) {
                     onClick={() => setDropdownOpen(false)}
                   />
                   {/* Dropdown with depth layers */}
-                  <div className="absolute top-full left-0 mt-4 w-80 z-40 bg-[#161616] border border-white/[0.08] rounded-lg shadow-[0_8px_32px_rgba(0,0,0,0.6),0_4px_0px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.05)] overflow-hidden">
+                  <div className="absolute top-full left-0 mt-4 w-80 z-40 bg-[#1a1a1a] border border-white/[0.08] rounded-lg shadow-[0_8px_32px_rgba(0,0,0,0.6),0_4px_0px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.05)] overflow-hidden">
                     {/* Header with subtle top light */}
                     <div className="relative px-4 py-3">
                       <div className="absolute top-0 left-0 right-0 h-px"></div>
@@ -257,9 +267,9 @@ export default function NavBar({ activeTab, setActiveTab }) {
                         </button>
                       </div>
                     </div>
-
+                    
                     {/* Pages List */}
-                    <div className="p-2 max-h-[400px] overflow-y-auto">
+                    <div className="p-2 max-h-[400px] overflow-y-auto border-t border-t-zinc-800">
                       {SortedPage.map((page, index) => {
                         const isDragging = draggedPage?.index === index;
                         const isDropTarget =
@@ -437,7 +447,6 @@ export default function NavBar({ activeTab, setActiveTab }) {
 
           {/* Right side - Icons */}
           <div className="flex items-center gap-4 px-1">
-
             <h2>[ Beta ]</h2>
 
             <div className="flex items-center gap-2">
@@ -450,12 +459,15 @@ export default function NavBar({ activeTab, setActiveTab }) {
 
               <button
                 onClick={() => setSearchOpen(true)}
-                className="text-gray-400 hover:text-white bg-[#2A2A2C] rounded-full transition-colors py-1.5 hover:bg-neutral-800"
+                className="hover:text-white bg-[#2A2A2C] text-white shadow-[0_3px_3px_rgba(0,0,0,0.4)] rounded-lg transition-colors py-1.5 hover:bg-neutral-800"
                 aria-label="Search"
               >
                 <div className="flex items-center px-2 gap-1">
-                  <Search size={16} />
-                  <span className="text-sm">Ctrl K</span>
+                  <Search size={18}/>
+                  <div className="flex items-center text-neutral-400 gap-0.5">
+                    <Command size={11} />
+                    <span className="text-sm">K</span>
+                  </div>
                 </div>
               </button>
             </div>

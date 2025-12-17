@@ -76,23 +76,23 @@ const BackupManager = () => {
   return (
     <div className="bg-[#232323] rounded-lg p-3">
       {/* Header */}
-      <div className="flex items-center gap-1.5 mb-3">
+      {/* <div className="flex items-center gap-1.5 mb-3">
         <Database size={16} className="text-gray-400" />
         <h2 className="text-xs font-semibold text-white">Backup & Restore</h2>
-      </div>
+      </div>*/}
 
       {/* Statistics */}
       {stats && (
         <div className="grid grid-cols-3 gap-1.5 mb-3">
-          <div className="bg-[#27272a] rounded-lg py-2 text-center">
+          <div className="border border-[#8E8E8E]/25 bg-neutral-800 text-white rounded-lg py-2 text-center">
             <div className="text-base font-bold text-white">{stats.pages}</div>
             <div className="text-[9px] text-gray-400 mt-0.5">Pages</div>
           </div>
-          <div className="bg-[#27272a] rounded-lg py-2 text-center">
+          <div className="border border-[#8E8E8E]/25 bg-neutral-800 text-white  rounded-lg py-2 text-center">
             <div className="text-base font-bold text-white">{stats.widgets}</div>
             <div className="text-[9px] text-gray-400 mt-0.5">Widgets</div>
           </div>
-          <div className="bg-[#27272a] rounded-lg py-2 text-center">
+          <div className="border border-[#8E8E8E]/25 bg-neutral-800 text-white rounded-lg py-2 text-center">
             <div className="text-base font-bold text-white">{stats.links}</div>
             <div className="text-[9px] text-gray-400 mt-0.5">Links</div>
           </div>
