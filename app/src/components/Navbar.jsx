@@ -22,6 +22,7 @@ export default function NavBar({ activeTab, setActiveTab }) {
   const [pages, setPages] = useState([]);
   const [draggedPage, setDraggedPage] = useState(null);
   const [dragOverIndex, setDragOverIndex] = useState(null);
+  const [isMouseDown, setIsMouseDown] = useState(null);
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -214,7 +215,7 @@ export default function NavBar({ activeTab, setActiveTab }) {
             <div className="relative">
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="flex items-center gap-1 mx-1 px-2 py-2 hover:border border-1  rounded-xl shadow-[0_4px_10px_rgba(0,0,0,0.4)] bg-[#2A2A2C] transition-colors"
+                className="flex items-center gap-1 mx-1 px-2 py-2 hover:border border-1  rounded-xl shadow-[0_4px_10px_rgba(0,0,0,0.4)] transition-colors"
                 aria-label="Pages menu"
               >
                 <Menu size={18} />
@@ -261,7 +262,7 @@ export default function NavBar({ activeTab, setActiveTab }) {
                             setDropdownOpen(false);
                             setNewPageDialog(true);
                           }}
-                          className="text-neutral-200 hover:text-white hover:bg-white/[0.05] p-1.5 rounded-lg transition-all hover:shadow-[0_4px_12px_rgba(0,0,0,0.3)]"
+                          className="text-neutral-200 hover:text-white hover:bg-white/[0.05] p-1.5 rounded-lg transition-all  hover:shadow-[0_4px_12px_rgba(0,0,0,0.3)]"
                         >
                           <Plus size={16} />
                         </button>
@@ -416,10 +417,10 @@ export default function NavBar({ activeTab, setActiveTab }) {
                     onDrop={(e) => handlePageDrop(e, index)}
                     onClick={() => setActiveTab(page.uuid)}
                     className={`
-                      px-5 py-2 rounded-xl transition-all duration-200 text-sm
+                      px-3 py-2 rounded-xl transition-all duration-200 text-sm
                       ${
                         activeTab === page.uuid
-                          ? " bg-white text-black font-bold"
+                          ? " bg-white text-black font-bold px-5"
                           : " text-white hover:text-white shadow-[0_4px_10px_rgba(0,0,0,0.4)]"
                       }
                       ${isDragging ? "opacity-30 scale-95" : "opacity-100 scale-100"}
@@ -438,7 +439,20 @@ export default function NavBar({ activeTab, setActiveTab }) {
               {/* Add Page Button */}
               <button
                 onClick={() => setNewPageDialog(true)}
-                className="text-white transition-colors hover:border border-1 shadow-[0_4px_10px_rgba(0,0,0,0.4)] rounded-full bg-[#2A2A2C] p-2"
+                onMouseDown={() => setIsMouseDown(true)}
+                className={`
+                  text-white
+                  rounded-full p-2
+                  bg-transparent
+                  shadow-[0_4px_10px_rgba(0,0,0,0.4)]
+                  transition-all
+                  duration-200
+                  ease-out
+                  hover:bg-[#1E1F20]
+                  hover:shadow-lg
+                  active:scale-95
+                  active:opacity-80
+                `}
               >
                 <Plus size={18} />
               </button>
@@ -503,7 +517,9 @@ export default function NavBar({ activeTab, setActiveTab }) {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-6 shadow-(0_5px_2px_rgba(0,0,0,0.4)">
-              <h2 className="text-Base text-white font-instrument">Create New Page</h2>
+              <h2 className="text-Base text-white font-instrument">
+                Create New Page
+              </h2>
               <button
                 onClick={() => setNewPageDialog(false)}
                 className="text-gray-400 hover:text-white transition-colors p-1 hover:bg-gray-800 rounded"
@@ -513,19 +529,19 @@ export default function NavBar({ activeTab, setActiveTab }) {
             </div>
 
             <div className="space-y-4">
-                <input
-                  type="text"
-                  value={newPage.title}
-                  onChange={(e) => setNewPage({ title: e.target.value })}
-                  placeholder="Enter page title..."
-                  autoFocus
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && newPage.title.trim()) {
-                      addPage();
-                    }
-                  }}
-                  className="w-full px-4 py-2 bg-[#0e0e0e] border border-gray-700 rounded-lg text-white outline-none focus:border-gray-500 transition-all placeholder-neutral-500"
-                />
+              <input
+                type="text"
+                value={newPage.title}
+                onChange={(e) => setNewPage({ title: e.target.value })}
+                placeholder="Enter page title..."
+                autoFocus
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && newPage.title.trim()) {
+                    addPage();
+                  }
+                }}
+                className="w-full px-4 py-2 bg-[#0e0e0e] border border-gray-700 rounded-lg text-white outline-none focus:border-gray-500 transition-all placeholder-neutral-500"
+              />
 
               <div className="flex gap-3 pt-2">
                 <button
