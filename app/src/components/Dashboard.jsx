@@ -195,16 +195,16 @@ const Dashboard = ({ activePage = "c9f9bcf-2a55-4784-8a9b-637cbe8efba0" }) => {
 
   return (
     // this for my local version
-    <div className="h-full overflow-y-auto px-8 py-6 custom-scroll">
-      <div className="grid grid-cols-3 gap-4 max-w-full mx-auto">
+    <div className="h-full overflow-y-auto px-4 sm:px-6 md:px-8 py-4 sm:py-6 custom-scroll">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-full mx-auto">
         {widgets.length === 0 ? (
-          <div className="col-span-3 flex flex-col items-center justify-center py-24">
+          <div className="col-span-1 md:col-span-2 lg:col-span-3 flex flex-col items-center justify-center py-12 sm:py-24">
             <button
               onClick={() => addWidget(1)}
               style={{
                 backgroundColor: `rgba(10, 10, 10, ${Math.max(0.8, widgetOpacity / 100)})`,
               }}
-              className="group relative flex flex-col items-center gap-3 px-12 py-10
+              className="group relative flex flex-col items-center gap-3 px-8 sm:px-12 py-8 sm:py-10 w-full max-w-md
                 hover:bg-[#1c1c1f]
                 border-2 border-dashed border-zinc-700
                 hover:border-zinc-700
@@ -217,10 +217,10 @@ const Dashboard = ({ activePage = "c9f9bcf-2a55-4784-8a9b-637cbe8efba0" }) => {
                 duration-300"
             >
               <Plus
-                size={48}
-                className="text-neutral-600 group-hover:text-gray-300 group-hover:rotate-90 transition-all duration-500"
+                size={40}
+                className="sm:w-12 sm:h-12 text-neutral-600 group-hover:text-gray-300 group-hover:rotate-90 transition-all duration-500"
               />
-              <span className="text-base font-medium text-gray-400 group-hover:text-gray-200 transition-colors duration-300">
+              <span className="text-sm sm:text-base font-medium text-gray-400 group-hover:text-gray-200 transition-colors duration-300">
                 Add Widget
               </span>
               <span className="text-xs text-[#767676] group-hover:text-gray-200 transition-colors duration-300">
@@ -237,7 +237,7 @@ const Dashboard = ({ activePage = "c9f9bcf-2a55-4784-8a9b-637cbe8efba0" }) => {
               return (
                 <div
                   key={columnId}
-                  className={`space-y-6 mx-1 my-6 transition-all duration-200 group ${
+                  className={`space-y-4 sm:space-y-6 mx-0 sm:mx-1 my-4 sm:my-6 transition-all duration-200 group ${
                     isColumnHovered ? "opacity-100" : "opacity-100"
                   }`}
                   onDragOver={(e) => handleColumnDragOver(e, columnId)}
@@ -285,9 +285,9 @@ const Dashboard = ({ activePage = "c9f9bcf-2a55-4784-8a9b-637cbe8efba0" }) => {
 
                   <button
                     onClick={() => addWidget(columnId)}
-                    className="flex items-center text-[#020202] justify-center select-none gap-2 px-3 rounded-xl transition-all duration-150 group-hover:text-[#767676]/75 hover:!text-white"
+                    className="flex items-center text-[#020202] justify-center select-none gap-2 px-3 rounded-xl transition-all duration-150 group-hover:text-[#767676]/75 hover:!text-white text-xs sm:text-sm"
                   >
-                    <Plus size={20} />
+                    <Plus size={18} className="sm:w-5 sm:h-5" />
                     <span className="text-sm">Add widget</span>
                   </button>
                 </div>

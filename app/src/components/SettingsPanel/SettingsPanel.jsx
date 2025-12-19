@@ -6,7 +6,8 @@ import { SettingsContext } from "../../contexts/SettingsProvider";
 import { Broom } from "@phosphor-icons/react";
 import { X, Database, Images, Upload, Check } from "lucide-react";
 
-const PANEL_WIDTH = "360px";
+const PANEL_WIDTH_MOBILE = "100vw";
+const PANEL_WIDTH_DESKTOP = "360px";
 
 const SettingsPanel = ({ setPresetId }) => {
   // const [searchQuery, setSearchQuery] = useState("");
@@ -124,15 +125,15 @@ const SettingsPanel = ({ setPresetId }) => {
         />
       )}
 
-      {/* Settings Panel - Slides from RIGHT */}
+      {/* Settings Panel - Slides from RIGHT on desktop, from BOTTOM on mobile */}
       <div
         className={`
           fixed top-0 right-0 h-full bg-[#1A1A1A] border-l border-neutral-700 z-50
-          shadow-[-4px_0_20 px_rgba(0,0,0,0.5)] overflow-hidden
+          shadow-[-4px_0_20px_rgba(0,0,0,0.5)] overflow-hidden
           transition-transform duration-300 ease-out flex flex-col
+          w-full sm:w-[360px]
           ${settingsOpen ? "translate-x-0" : "translate-x-full"}
         `}
-        style={{ width: PANEL_WIDTH }}
       >
         {/* Header */}
         <div className="sticky top-0 bg-[#161616] border-b border-neutral-700 z-20">
@@ -180,7 +181,7 @@ const SettingsPanel = ({ setPresetId }) => {
                   Presets
                 </div>
 
-                <div className="flex gap-3">
+                <div className="grid grid-cols-5 sm:flex sm:gap-3 gap-2">
                   {BG_PRESETS.map((preset) => (
                     <button
                       key={preset.id}
@@ -192,10 +193,12 @@ const SettingsPanel = ({ setPresetId }) => {
                       }`}
                     >
                       <div
-                        className="w-14 h-14 rounded border border-neutral-700 bg-cover bg-center"
+                        className="w-12 h-12 sm:w-14 sm:h-14 rounded border border-neutral-700 bg-cover bg-center"
                         style={{ backgroundImage: `url(${preset.bg})` }}
                       />
-                      <label className="text-xs">{preset.label}</label>
+                      <label className="text-[10px] sm:text-xs">
+                        {preset.label}
+                      </label>
                     </button>
                   ))}
                 </div>
@@ -237,13 +240,10 @@ const SettingsPanel = ({ setPresetId }) => {
                 <div className="animate-in fade-in slide-in-from-top-2 duration-300">
                   <div
                     onClick={() => fileInputRef.current?.click()}
-                    className="bg-[#212020] text-[#8E8E8E] border-2 border-dashed border-neutral-700 rounded-lg p-6 flex flex-col items-center justify-center text-center shadow-[0_1px_10px_rgba(0,0,0,0.4)] cursor-pointer hover:bg-neutral-900/50 hover:border-neutral-500 transition-colors group"
+                    className="bg-[#212020] text-[#8E8E8E] border-2 border-dashed border-neutral-700 rounded-lg p-4 sm:p-6 flex flex-col items-center justify-center text-center shadow-[0_1px_10px_rgba(0,0,0,0.4)] cursor-pointer hover:bg-neutral-900/50 hover:border-neutral-500 transition-colors group"
                   >
-                    <Upload
-                      className="group-hover:text-neutral-300 mb-2 transition-colors"
-                      size={24}
-                    />
-                    <span className="text-sm  group-hover:text-neutral-200">
+                    <Upload className="group-hover:text-neutral-300 mb-2 transition-colors w-5 h-5 sm:w-6 sm:h-6" />
+                    <span className="text-xs sm:text-sm group-hover:text-neutral-200">
                       Tap to upload Image/Video
                     </span>
                     <input
@@ -262,7 +262,7 @@ const SettingsPanel = ({ setPresetId }) => {
                   )}
                 </div>
               )}
-              
+
               {(bgType === "local" || bgType === "preset") && (
                 <div className="pt-2">
                   <div className="text-sm text-[#A4A4A4] tracking-wide">
@@ -270,29 +270,33 @@ const SettingsPanel = ({ setPresetId }) => {
                   </div>
 
                   <div className="space-y-3">
-                    <div className="flex items-center bg-[#1C1E1D] text-[14px] text-[@D2D1D1] border border-[#3E3D3D] rounded-md mt-2 p-2.5 px-3 w-[325px]">
-                      <span>Blur</span>
-                      <span className="ml-16 mr-3">{bgBlur}%</span>
+                    <div className="flex items-center bg-[#1C1E1D] text-xs sm:text-[14px] text-[@D2D1D1] border border-[#3E3D3D] rounded-md mt-2 p-2 sm:p-2.5 px-2 sm:px-3 w-full">
+                      <span className="flex-shrink-0">Blur</span>
+                      <span className="ml-16 mr-2 sm:mr-3 flex-shrink-0">
+                        {bgBlur}%
+                      </span>
                       <input
                         type="range"
                         min="0"
                         max="20"
                         value={bgBlur}
                         onChange={(e) => setBgBlur(e.target.value)}
-                        className="w-full h-0.5 bg-[#D9D9D9] appearance-none cursor-pointer accent-white"
+                        className="flex-1 h-0.5 bg-[#D9D9D9] appearance-none cursor-pointer accent-white"
                       />
                     </div>
 
-                    <div className="flex items-center bg-[#1C1E1D] text-[14px] text-[@D2D1D1] border border-[#3E3D3D] rounded-md mt-2 p-2.5 px-3 w-[325px]">
-                      <span>Brightness</span>
-                      <span className="ml-5 mr-3">{bgBrightness}%</span>
+                    <div className="flex items-center bg-[#1C1E1D] text-xs sm:text-[14px] text-[@D2D1D1] border border-[#3E3D3D] rounded-md mt-2 p-2 sm:p-2.5 px-2 sm:px-3 w-full">
+                      <span className="flex-shrink-0">Brightness</span>
+                      <span className="ml-5 mr-2 sm:mr-3 flex-shrink-0">
+                        {bgBrightness}%
+                      </span>
                       <input
                         type="range"
                         min="10"
                         max="200"
                         value={bgBrightness}
                         onChange={(e) => setBgBrightness(e.target.value)}
-                        className="w-full h-0.5 bg-[#D9D9D9] appearance-none cursor-pointer accent-white"
+                        className="flex-1 h-0.5 bg-[#D9D9D9] appearance-none cursor-pointer accent-white"
                       />
                     </div>
                   </div>
@@ -324,16 +328,18 @@ const SettingsPanel = ({ setPresetId }) => {
                     />
                   </div>*/}
 
-                  <div className="flex items-center bg-[#1C1E1D] text-[14px] text-[@D2D1D1] border border-[#3E3D3D] rounded-md mt-2 p-2.5 px-3 w-[325px]">
-                    <span>Opacity</span>
-                    <span className="ml-11 mr-3">{widgetOpacity}%</span>
+                  <div className="flex items-center bg-[#1C1E1D] text-xs sm:text-[14px] text-[@D2D1D1] border border-[#3E3D3D] rounded-md mt-2 p-2 sm:p-2.5 px-2 sm:px-3 w-full">
+                    <span className="flex-shrink-0">Opacity</span>
+                    <span className="ml-11 mr-2 sm:mr-3 flex-shrink-0">
+                      {widgetOpacity}%
+                    </span>
                     <input
                       type="range"
                       min="20"
                       max="100"
                       value={widgetOpacity}
                       onChange={(e) => setWidgetOpacity(e.target.value)}
-                      className="w-full h-0.5 bg-[#D9D9D9] appearance-none cursor-pointer accent-white"
+                      className="flex-1 h-0.5 bg-[#D9D9D9] appearance-none cursor-pointer accent-white"
                     />
                   </div>
                 </div>

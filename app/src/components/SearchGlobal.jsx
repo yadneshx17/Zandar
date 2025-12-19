@@ -109,7 +109,7 @@ export default function SearchGlobal({ setSearchOpen }) {
 
   return (
     <div
-      className={`fixed inset-0 bg-black/60 backdrop-blur-sm flex flex-col items-center pt-28 z-50 transition-opacity duration-200 ${
+      className={`fixed inset-0 bg-black/60 backdrop-blur-sm flex flex-col items-center pt-16 sm:pt-28 z-50 transition-opacity duration-200 px-4 ${
         isMounted ? "opacity-100" : "opacity-0"
       }`}
       onClick={() => {
@@ -125,8 +125,8 @@ export default function SearchGlobal({ setSearchOpen }) {
         onClick={(e) => e.stopPropagation()}
       >
         {/* Search Input Box */}
-        <div className="flex items-center gap-3 p-4 border-gray-700 ">
-          <Search className="w-5 h-5 text-white flex-shrink-0" />
+        <div className="flex items-center gap-2 sm:gap-3 p-3 sm:p-4 border-gray-700 ">
+          <Search className="w-4 h-4 sm:w-5 sm:h-5 text-white flex-shrink-0" />
           <input
             ref={inputRef}
             type="text"
@@ -134,7 +134,7 @@ export default function SearchGlobal({ setSearchOpen }) {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             autoFocus
-            className="flex-1 bg-transparent text-white outline-none text-lg placeholder-neutral-500"
+            className="flex-1 bg-transparent text-white outline-none text-sm sm:text-lg placeholder-neutral-500"
           />
 
           {/* <button
@@ -148,7 +148,7 @@ export default function SearchGlobal({ setSearchOpen }) {
             <X className="w-5 h-5" />
           </button>*/}
 
-          <div className="flex items-center gap-0.5 bg-[#808080] text-black shadow-[0_2px_1px_rgba(0,0,0,0.5),0_1px_5px_rgba(0,0,0,0.4)] px-1.5 rounded-md">
+          <div className="hidden sm:flex items-center gap-0.5 bg-[#808080] text-black shadow-[0_2px_1px_rgba(0,0,0,0.5),0_1px_5px_rgba(0,0,0,0.4)] px-1.5 rounded-md">
             <Command size={13} /> K
           </div>
         </div>
@@ -156,7 +156,7 @@ export default function SearchGlobal({ setSearchOpen }) {
 
       {/* Results Secction*/}
       <div
-        className={`bg-[#161616] w-full max-w-2xl  transform transition-all duration-200 mt-2 rounded-lg max-h-96 overflow-y-auto`}
+        className={`bg-[#161616] w-full max-w-2xl transform transition-all duration-200 mt-2 rounded-lg max-h-[60vh] sm:max-h-96 overflow-y-auto`}
       >
         {searchQuery.trim() && filteredLinks.length > 0 && (
           <div className="p-2">
@@ -173,7 +173,7 @@ export default function SearchGlobal({ setSearchOpen }) {
                   key={link.id}
                   onClick={() => handleLinkClick(link)}
                   onMouseEnter={() => setSelectedIndex(index)}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-left group ${
+                  className={`w-full flex items-center gap-2 sm:gap-3 px-2 sm:px-3 py-2 sm:py-2.5 rounded-lg transition-all text-left group ${
                     selectedIndex === index
                       ? "bg-[#27272a] text-white"
                       : "text-gray-300 hover:bg-[#222222] hover:text-white"
@@ -181,17 +181,17 @@ export default function SearchGlobal({ setSearchOpen }) {
                 >
                   <img
                     src={getFaviconUrl(link.url)}
-                    className="w-8 h-8 flex-shrink-0 rounded"
+                    className="w-6 h-6 sm:w-8 sm:h-8 flex-shrink-0 rounded"
                     alt=""
                     onError={(e) => {
                       e.target.style.display = "none";
                     }}
                   />
                   <div className="flex-1 min-w-0">
-                    <div className="font-medium text-sm truncate">
+                    <div className="font-medium text-xs sm:text-sm truncate">
                       {link.name || "Untitled"}
                     </div>
-                    <div className="text-xs text-gray-500 truncate mt-0.5">
+                    <div className="text-[10px] sm:text-xs text-gray-500 truncate mt-0.5">
                       {link.url}
                     </div>
                   </div>

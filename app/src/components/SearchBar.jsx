@@ -35,8 +35,8 @@ const SearchBar = ({
       group
     ">
       {/* Search Icon */}
-      <div className="absolute left-3 pointer-events-none">
-        <Search size={16} className="text-gray-500" />
+      <div className="absolute left-2 sm:left-3 pointer-events-none">
+        <Search size={14} className="sm:w-4 sm:h-4 text-gray-500" />
       </div>
 
       {/* Input Field */}
@@ -50,18 +50,18 @@ const SearchBar = ({
         className="
           w-full
           bg-transparent
-          text-white text-sm
-          pl-10 pr-20 py-2
+          text-white text-xs sm:text-sm
+          pl-8 sm:pl-10 pr-16 sm:pr-20 py-1.5 sm:py-2
           focus:outline-none
           placeholder-gray-500
         "
       />
 
       {/* Keyboard Shortcut Hint */}
-      <div className="absolute right-3 pointer-events-none">
+      <div className="absolute right-2 sm:right-3 pointer-events-none hidden sm:block">
         <kbd className="
-          px-2 py-0.5
-          text-xs
+          px-1.5 sm:px-2 py-0.5
+          text-[10px] sm:text-xs
           text-gray-500
           bg-[#0e0e0e]
           border border-gray-800

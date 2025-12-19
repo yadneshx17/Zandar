@@ -208,11 +208,11 @@ export default function NavBar({ activeTab, setActiveTab }) {
           backgroundColor: `rgba(0, 0, 0, ${Math.max(0.8, widgetOpacity / 100)})`,
         }}
       >
-        <div className="flex items-center justify-between h-12 px-4">
+        <div className="flex items-center justify-between h-12 px-2 sm:px-4">
           {/* Left side - Dropdown & Tabs */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4 flex-1 min-w-0">
             {/* Dropdown Menu */}
-            <div className="relative">
+            <div className="relative flex-shrink-0">
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
                 className="flex items-center gap-1 mx-1 px-2 py-2 hover:border border-1  rounded-xl shadow-[0_4px_10px_rgba(0,0,0,0.4)] transition-colors"
@@ -229,7 +229,7 @@ export default function NavBar({ activeTab, setActiveTab }) {
                     onClick={() => setDropdownOpen(false)}
                   />
                   {/* Dropdown with depth layers */}
-                  <div className="absolute top-full left-0 mt-4 w-80 z-40 bg-[#1a1a1a] border border-white/[0.08] rounded-lg shadow-[0_8px_32px_rgba(0,0,0,0.6),0_4px_0px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.05)] overflow-hidden">
+                  <div className="absolute top-full left-0 mt-2 sm:mt-4 w-[calc(100vw-1rem)] sm:w-80 max-w-sm z-40 bg-[#1a1a1a] border border-white/[0.08] rounded-lg shadow-[0_8px_32px_rgba(0,0,0,0.6),0_4px_0px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.05)] overflow-hidden">
                     {/* Header with subtle top light */}
                     <div className="relative px-4 py-3">
                       <div className="absolute top-0 left-0 right-0 h-px"></div>
@@ -270,7 +270,7 @@ export default function NavBar({ activeTab, setActiveTab }) {
                     </div>
 
                     {/* Pages List */}
-                    <div className="p-2 max-h-[400px] overflow-y-auto border-t border-t-zinc-800">
+                    <div className="p-2 max-h-[50vh] sm:max-h-[400px] overflow-y-auto border-t border-t-zinc-800">
                       {SortedPage.map((page, index) => {
                         const isDragging = draggedPage?.index === index;
                         const isDropTarget =
@@ -400,7 +400,7 @@ export default function NavBar({ activeTab, setActiveTab }) {
             </div>
 
             {/* Tabs */}
-            <div className="flex items-center gap-2 font-sans">
+            <div className="flex items-center gap-1 sm:gap-2 font-sans overflow-x-auto scrollbar-hide flex-1 min-w-0">
               {SortedPage.map((page, index) => {
                 const isDragging = draggedPage?.index === index;
                 const isDropTarget =
@@ -417,10 +417,10 @@ export default function NavBar({ activeTab, setActiveTab }) {
                     onDrop={(e) => handlePageDrop(e, index)}
                     onClick={() => setActiveTab(page.uuid)}
                     className={`
-                      px-3 py-2 rounded-xl transition-all duration-200 text-sm
+                      px-2 sm:px-3 py-2 rounded-xl transition-all duration-200 text-xs sm:text-sm whitespace-nowrap flex-shrink-0
                       ${
                         activeTab === page.uuid
-                          ? " bg-white text-black font-bold px-5"
+                          ? " bg-white text-black font-bold px-3 sm:px-5"
                           : " text-white hover:text-white shadow-[0_4px_10px_rgba(0,0,0,0.4)]"
                       }
                       ${isDragging ? "opacity-30 scale-95" : "opacity-100 scale-100"}
@@ -428,7 +428,7 @@ export default function NavBar({ activeTab, setActiveTab }) {
                       ${isDropTarget && activeTab == page.uuid ? "border border-black scale-95" : ""}
                     `}
                   >
-                    <span className="w-full">{page.title}</span>
+                    <span className="w-full truncate max-w-[120px] sm:max-w-none">{page.title}</span>
                   </button>
                 );
               })}
@@ -460,10 +460,10 @@ export default function NavBar({ activeTab, setActiveTab }) {
           </div>
 
           {/* Right side - Icons */}
-          <div className="flex items-center gap-4 px-1">
-            <h2>[ Beta ]</h2>
+          <div className="flex items-center gap-2 sm:gap-4 px-1 flex-shrink-0">
+            <h2 className="hidden sm:block text-xs sm:text-sm">[ Beta ]</h2>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 sm:gap-2">
               {/* <button
                 className="text-gray-400 hover:text-white transition-colors p-1.5 rounded hover:bg-gray-800"
                 aria-label="Edit mode"
@@ -476,9 +476,9 @@ export default function NavBar({ activeTab, setActiveTab }) {
                 className="hover:text-white bg-[#2A2A2C] text-white shadow-[0_3px_3px_rgba(0,0,0,0.4)] rounded-lg transition-colors py-1.5 hover:bg-neutral-800"
                 aria-label="Search"
               >
-                <div className="flex items-center px-2 gap-1">
-                  <Search size={18} />
-                  <div className="flex items-center text-neutral-400 gap-0.5">
+                <div className="flex items-center px-1.5 sm:px-2 gap-0.5 sm:gap-1">
+                  <Search size={16} className="sm:w-[18px] sm:h-[18px]" />
+                  <div className="hidden sm:flex items-center text-neutral-400 gap-0.5">
                     <Command size={11} />
                     <span className="text-sm">K</span>
                   </div>
@@ -487,13 +487,13 @@ export default function NavBar({ activeTab, setActiveTab }) {
             </div>
 
             {/* Divider */}
-            <div className="h-4 w-[2px] rounded-full bg-[#2A2A2C]"></div>
+            <div className="h-4 w-[2px] rounded-full bg-[#2A2A2C] hidden sm:block"></div>
 
             <button
               onClick={() => setSettingsOpen(!settingsOpen)}
               className="text-gray-400 hover:text-white transition-colors p-1.5 rounded hover:bg-gray-800"
             >
-              <Settings2 size={18} />
+              <Settings2 size={16} className="sm:w-[18px] sm:h-[18px]" />
             </button>
             {/* <SettingsPanel
               isOpen={settingsOpen}
@@ -509,11 +509,11 @@ export default function NavBar({ activeTab, setActiveTab }) {
       {/* New Page Dialog */}
       {newPageDialog && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 font-instrument"
+          className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 font-instrument p-4"
           onClick={() => setNewPageDialog(false)}
         >
           <div
-            className="bg-[#1a1a1a] border border-white/20 rounded-lg shadow-[0_1px_1px_rgba(0,0,0,0.4)] w-96 p-6"
+            className="bg-[#1a1a1a] border border-white/20 rounded-lg shadow-[0_1px_1px_rgba(0,0,0,0.4)] w-full max-w-sm p-4 sm:p-6"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-6 shadow-(0_5px_2px_rgba(0,0,0,0.4)">
@@ -565,11 +565,11 @@ export default function NavBar({ activeTab, setActiveTab }) {
       {/* Delete Confirmation Modal */}
       {deleteConfirm && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50"
+          className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4"
           onClick={() => setDeleteConfirm(null)}
         >
           <div
-            className="bg-[#1a1a1a] border border-gray-700 rounded-lg shadow-2xl w-96 p-6"
+            className="bg-[#1a1a1a] border border-gray-700 rounded-lg shadow-2xl w-full max-w-sm p-4 sm:p-6"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="mb-4">

@@ -15,7 +15,7 @@ function App() {
       <div className="relative w-screen h-screen overflow-hidden text-gray-200 font-sans selection:bg-purple-500/30">
         <BackgroundWrapper />
         <div
-          className="relative z-10 flex flex-col h-full"
+          className="relative z-10 flex flex-col h-full min-h-0"
           style={
             presetId === "glass" || presetId === "gradient"
               ? {

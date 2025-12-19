@@ -339,8 +339,8 @@ const Widget = ({ widget, widgets, setWidgets }) => {
     <>
       {/* Confirm Dialog */}
       {confirmDialog.show && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-          <div className="bg-[#18181b] border border-gray-800 rounded-xl p-6 shadow-2xl w-80">
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+          <div className="bg-[#18181b] border border-gray-800 rounded-xl p-4 sm:p-6 shadow-2xl w-full max-w-sm">
             <div className="flex gap-3 items-center text-red-400 mb-4">
               <AlertTriangle size={20} />
               <span className="font-semibold text-lg">
@@ -371,7 +371,7 @@ const Widget = ({ widget, widgets, setWidgets }) => {
 
       {/* Widget Container */}
       <div
-        className="bg-[#161616] rounded-xl p-5 transition-all font-instrument shadow-[0_4px_15px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.03)]"
+        className="bg-[#161616] rounded-xl p-3 sm:p-5 transition-all font-instrument shadow-[0_4px_15px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.03)]"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         onDragOver={(e) => e.preventDefault()}
@@ -379,7 +379,7 @@ const Widget = ({ widget, widgets, setWidgets }) => {
         style={widgetStyle}
       >
         {/* Header */}
-        <div className="flex justify-between items-center mb-4">
+        <div className="flex justify-between items-center mb-3 sm:mb-4 gap-2">
           <div className="flex gap-2 items-center flex-1">
             {editingWidgetTitle ? (
               <input
@@ -411,22 +411,22 @@ const Widget = ({ widget, widgets, setWidgets }) => {
                   }
                 }}
                 autoFocus
-                className="flex-1 mr-6 bg-[#27272a] text-white text-base font-medium px-3 py-1.5 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#767676]/50"
+                className="flex-1 mr-2 sm:mr-6 bg-[#27272a] text-white text-sm sm:text-base font-medium px-2 sm:px-3 py-1.5 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#767676]/50"
               />
             ) : (
               <button
                 onClick={() => toggleCollapse(widget.id, widget.collapsed)}
-                className="flex items-center gap-2 flex-1 text-left group/title"
+                className="flex items-center gap-2 flex-1 text-left group/title min-w-0"
               >
                 <h3
-                  className="text-base font-medium text-white group-hover/title:text-gray-200"
+                  className="text-sm sm:text-base font-medium text-white group-hover/title:text-gray-200 truncate"
                   onDoubleClick={() => setEditingWidgetTitle(true)}
                 >
                   {widget.title}
                 </h3>
                 <ChevronDown
-                  size={18}
-                  className={`transition-transform ${widget.collapsed ? "-rotate-90 text-gray-400" : "+rotate-90 text-gray-400"} ${isHovered ? "opacity-100" : "opacity-0"} `}
+                  size={16}
+                  className={`sm:w-[18px] sm:h-[18px] flex-shrink-0 transition-transform ${widget.collapsed ? "-rotate-90 text-gray-400" : "+rotate-90 text-gray-400"} ${isHovered ? "opacity-100" : "opacity-0"} `}
                 />
               </button>
             )}
@@ -434,7 +434,7 @@ const Widget = ({ widget, widgets, setWidgets }) => {
 
           {/* Widget Actions */}
           <div
-            className={`flex gap-1 transition-opacity duration-200 ${isHovered ? "opacity-100" : "opacity-0"}`}
+            className={`flex gap-1 transition-opacity duration-200 flex-shrink-0 ${isHovered ? "opacity-100" : "opacity-0"}`}
           >
             <button
               onClick={() => setEditingWidgetTitle(true)}
@@ -464,7 +464,7 @@ const Widget = ({ widget, widgets, setWidgets }) => {
                 <>
                   {isEditingLink ? (
                     <div
-                      className="bg-[#27272a] p-5 rounded-lg space-y-2 mt-2"
+                      className="bg-[#27272a] p-3 sm:p-5 rounded-lg space-y-2 mt-2"
                       style={widgetStyle}
                       onKeyDown={(e) => {
                         if (e.key === "Enter") {
@@ -475,7 +475,7 @@ const Widget = ({ widget, widgets, setWidgets }) => {
                     >
                       <input
                         placeholder="Name"
-                        className="w-full bg-[#18181b] text-white border border-gray-700 px-3 py-2 rounded-lg text-sm focus:outline-none focus:border-gray-600 placeholder-gray-600"
+                        className="w-full bg-[#18181b] text-white border border-gray-700 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm focus:outline-none focus:border-gray-600 placeholder-gray-600"
                         style={widgetStyle}
                         value={editLinkData.name}
                         onChange={(e) => {
@@ -488,7 +488,7 @@ const Widget = ({ widget, widgets, setWidgets }) => {
                       />
                       <input
                         placeholder="URL"
-                        className="w-full bg-[#18181b] text-white border border-gray-700 px-3 py-2 rounded-lg text-sm focus:outline-none focus:border-gray-600 placeholder-gray-600"
+                        className="w-full bg-[#18181b] text-white border border-gray-700 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm focus:outline-none focus:border-gray-600 placeholder-gray-600"
                         style={widgetStyle}
                         value={editLinkData.url}
                         onChange={(e) => {
@@ -621,7 +621,7 @@ const Widget = ({ widget, widgets, setWidgets }) => {
               >
                 <input
                   placeholder="Auto-fetched title"
-                  className="w-full bg-[#18181b] text-white border border-gray-700 px-3 py-2 rounded-lg text-sm focus:outline-none focus:border-gray-600 placeholder-gray-600"
+                  className="w-full bg-[#18181b] text-white border border-gray-700 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm focus:outline-none focus:border-gray-600 placeholder-gray-600"
                   value={newLink.name}
                   onChange={(e) =>
                     setNewLink({ ...newLink, name: e.target.value })
@@ -629,7 +629,7 @@ const Widget = ({ widget, widgets, setWidgets }) => {
                 />
                 <input
                   placeholder="Paste a link to auto-fetch title"
-                  className="w-full bg-[#18181b] text-white border border-gray-700 px-3 py-2 rounded-lg text-sm focus:outline-none focus:border-gray-600 placeholder-gray-600"
+                  className="w-full bg-[#18181b] text-white border border-gray-700 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm focus:outline-none focus:border-gray-600 placeholder-gray-600"
                   value={newLink.url}
                   onChange={(e) => {
                     const urlValue = e.target.value;
