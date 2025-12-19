@@ -253,7 +253,7 @@ export default function NavBar({ activeTab, setActiveTab }) {
                             <path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17" />
                           </svg>
 
-                          <span className="text-sm font-md text-neutral-200 font-semibold tracking-wider ml-2">
+                          <span className="text-sm font-md text-neutral-200 font-semibold tracking-wider ml-2 select-none">
                             My Pages
                           </span>
                         </div>
@@ -461,7 +461,7 @@ export default function NavBar({ activeTab, setActiveTab }) {
 
           {/* Right side - Icons */}
           <div className="flex items-center gap-2 sm:gap-4 px-1 flex-shrink-0">
-            <h2 className="hidden sm:block text-xs sm:text-sm">[ Beta ]</h2>
+            <h2 className="hidden sm:block text-xs sm:text-sm select-none">[ Beta ]</h2>
 
             <div className="flex items-center gap-1 sm:gap-2">
               {/* <button

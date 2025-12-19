@@ -4,7 +4,7 @@ import BackupManager from "./BackupManager.jsx";
 import { db } from "../../services/db/schema.js";
 import { SettingsContext } from "../../contexts/SettingsProvider";
 import { Broom } from "@phosphor-icons/react";
-import { X, Database, Images, Upload, Check } from "lucide-react";
+import { X, Database, Images, Upload, Check, Command } from "lucide-react";
 
 const PANEL_WIDTH_MOBILE = "100vw";
 const PANEL_WIDTH_DESKTOP = "360px";
@@ -135,14 +135,19 @@ const SettingsPanel = ({ setPresetId }) => {
           ${settingsOpen ? "translate-x-0" : "translate-x-full"}
         `}
       >
-        {/* Header */}
         <div className="sticky top-0 bg-[#161616] border-b border-neutral-700 z-20">
-          {" "}
-          <div className="flex items-center justify-between px-4 py-3">
-            <div className="flex items-center justify-between py-1 w-full">
-              <h2 className="text-lg text-white font-medium tracking-wide">
-                Settings
-              </h2>
+          {/* Header */}
+          <div className="flex items-center justify-between px-4 py-3 select-none">
+            <div className="flex items-center justify-between w-full">
+              <div className="flex gap-4">
+                <h2 className="text-lg text-white font-medium tracking-wide">
+                  Zandar
+                </h2>
+
+                <div className="hidden sm:flex text-sm font-bold items-center gap-0.5 bg-[#808080] text-black shadow-[0_2px_1px_rgba(0,0,0,0.5),0_1px_5px_rgba(0,0,0,0.4)] px-1 rounded-md">
+                  v0.1.0
+                </div>
+              </div>
               <button
                 onClick={() => setSettingsOpen(false)}
                 className="text-white hover:text-neutral-400 p-1.5 rounded transition-all"
@@ -167,7 +172,7 @@ const SettingsPanel = ({ setPresetId }) => {
         </div>
 
         {/* Content */}
-        <div className="flex-1 p-4 space-y-6 overflow-y-auto">
+        <div className="flex-1 p-4 space-y-6 overflow-y-auto select-none">
           {/* Background Media */}
           <div>
             <div className="flex items-center mb-1">

@@ -1,14 +1,13 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Manrope', 'sans-serif'],          
-        instrument: ['Instrument Sans', 'sans-serif'],
+        // Must match the "family" name in the URL exactly
+        sans: ["Manrope", "sans-serif"],
+        instrument: ["Instrument Sans", "sans-serif"],
+        jetbrainsMono: ["JetBrains Mono", "monospace"], // Added space and monospace fallback
       },
     },
   },
