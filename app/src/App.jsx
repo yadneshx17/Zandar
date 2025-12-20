@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 
 import Dashboard from "./components/Dashboard";
@@ -13,7 +13,17 @@ import About from "./components/About";
 function App() {
   const [activePage, setActivePage] = useState("");
   const [presetId, setPresetId] = useState("");
-  const [cardDismissal, setCardDismissal] = useState(false);
+  
+  // Initialize cardDismissal from localStorage
+  const [cardDismissal, setCardDismissal] = useState(() => {
+    const saved = localStorage.getItem("cardDismissal");
+    return saved ? JSON.parse(saved) : false;
+  });
+
+  // Save cardDismissal to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("cardDismissal", JSON.stringify(cardDismissal));
+  }, [cardDismissal]);
 
   return (
     <>
