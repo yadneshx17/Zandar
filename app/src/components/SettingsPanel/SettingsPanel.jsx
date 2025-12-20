@@ -1,4 +1,5 @@
 import React, { useEffect, useContext, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import SearchBar from "../SearchBar";
 import BackupManager from "./BackupManager.jsx";
 import { db } from "../../services/db/schema.js";
@@ -9,8 +10,9 @@ import { X, Database, Images, Upload, Check, Command } from "lucide-react";
 const PANEL_WIDTH_MOBILE = "100vw";
 const PANEL_WIDTH_DESKTOP = "360px";
 
-const SettingsPanel = ({ setPresetId }) => {
+const SettingsPanel = ({ setPresetId, setCardDismissal }) => {
   // const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
 
   const fileInputRef = useRef(null);
   const {
@@ -78,13 +80,13 @@ const SettingsPanel = ({ setPresetId }) => {
       },
     },
     {
-      id: "city",
-      label: "City",
+      id: "game",
+      label: "Game",
       type: "preset",
-      bg: "/assets/backgrounds/city.jpg",
+      bg: "/assets/backgrounds/game.jpg",
       defaults: {
         blur: 18,
-        brightness: 95,
+        brightness: 100,
         widgetOpacity: 0,
       },
     },
@@ -142,7 +144,6 @@ const SettingsPanel = ({ setPresetId }) => {
               <div className="flex items-center gap-4">
                 <h2 className="text-lg text-white font-medium tracking-wide">
                   Zandar <span className="text-xs">v0.1.0</span>
-
                 </h2>
               </div>
               <button
@@ -391,21 +392,41 @@ const SettingsPanel = ({ setPresetId }) => {
           {/* Horizontal divider Line */}
           <div className="h-0.5 w-full rounded-full bg-[#2A2A2C]"></div>
 
-          <div className="flex justify-center">
+          <div className="flex justify-center gap-4">
             <button
               aria-label="Reset"
-              className="w-full font-instrument px-3 py-3 bg-red-600 rounded hover:bg-red-700 transition-colors"
-              onClick={async () => {
-                if (confirm("Delete all data and reset? :)")) {
-                  await db.delete();
-                  window.location.reload();
-                }
+              className="w-full font-instrument p-3 text-black bg-neutral-300 rounded hover:bg-neutral-400 transition-colors active:scale-95"
+              onClick={() => {
+                navigate("/about");
               }}
             >
-              Reset
+              About
+            </button>
+            <button
+              aria-label="Reset"
+              className="w-full font-sans p-3 text-black bg-neutral-300 rounded hover:bg-neutral-400 transition-colors active:scale-95"
+              onClick={() => {
+                setCardDismissal(false);
+                setSettingsOpen(false);
+              }}
+            >
+              OnBoarding
             </button>
           </div>
-        </div>
+          </div>
+          
+          <button
+            aria-label="Reset"
+            className="w-full font-instrument p-3 bg-red-600 rounded hover:bg-red-700 transition-colors"
+            onClick={async () => {
+              if (confirm("Delete all data and reset? :)")) {
+                await db.delete();
+                window.location.reload();
+              }
+            }}
+          >
+            Reset
+          </button>
       </div>
     </>
   );

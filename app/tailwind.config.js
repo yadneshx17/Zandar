@@ -7,7 +7,16 @@ export default {
         // Must match the "family" name in the URL exactly
         sans: ["Manrope", "sans-serif"],
         instrument: ["Instrument Sans", "sans-serif"],
-        jetbrainsMono: ["JetBrains Mono", "monospace"], // Added space and monospace fallback
+        serif: ["Instrument Serif", "system-ui"],
+        jolly: ["Jolly Lodger", "sans-serif"]},
+      keyframes: {
+        "fade-in": {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
+      },
+      animation: {
+        "fade-in": "fade-in 0.5s ease-in-out",
       },
     },
   },

@@ -21,7 +21,7 @@ const BackgroundWrapper = () => {
     nature: "/assets/backgrounds/nature.jpg",
     gradient: "/assets/backgrounds/gradient.jpg",
     vibrant: "/assets/backgrounds/blur.jpg",
-    city: "/assets/backgrounds/city.jpg",
+    game: "/assets/backgrounds/game.jpg",
   };
 
   useEffect(() => {
