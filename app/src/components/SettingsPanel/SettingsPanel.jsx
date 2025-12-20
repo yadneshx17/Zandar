@@ -398,6 +398,7 @@ const SettingsPanel = ({ setPresetId, setCardDismissal }) => {
               className="w-full font-instrument p-3 text-black bg-neutral-300 rounded hover:bg-neutral-400 transition-colors active:scale-95"
               onClick={() => {
                 navigate("/about");
+                setSettingsOpen(false);
               }}
             >
               About

@@ -39,14 +39,13 @@ const AboutPage = () => {
   };
 
   return (
-    <div className={`min-h-screen flex items-center justify-center p-6 font-sans relative transition-colors duration-500 ease-in-out ${theme.container}`}>
-      
+    <div className={`min-h-screen flex justify-center p-6 md:items-center overflow-y-auto font-sans relative transition-colors duration-500 ease-in-out ${theme.container}`}>
       {/* --- NAVIGATION CONTROLS --- */}
       
       {/* Top Left: Back Button */}
-      <a href="/" className={`absolute top-6 left-6 flex items-center gap-2 py-2 px-3 rounded-lg text-sm font-medium transition-all group ${theme.backBtn}`}>
+      <a href="/" className={`absolute top-4 left-4 md:top-6 md:left-6 flex items-center gap-2 py-2 px-3 rounded-lg text-sm font-medium transition-all group ${theme.backBtn}`}>
         <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform"/>
-        <span className="hidden sm:inline animate-pulse">Back to dashboard</span>
+        <span className="hidden md:inline animate-pulse">Back to dashboard</span>
       </a>
 
       {/* Top Right: Theme Toggle */}
@@ -69,7 +68,11 @@ const AboutPage = () => {
           </div>
         
           <h1 
-            className={`text-[90px] font-bold font-jolly tracking-tight transition-colors duration-300 ${theme.textMain}`}
+            className={`text-[52px]
+                sm:text-[64px]
+                md:text-[80px]
+                lg:text-[90px]
+                font-bold font-jolly tracking-tight transition-colors duration-300 ${theme.textMain}`}
             style={{ textShadow: "0 4px 4px rgba(0,0,0,0.35)" }}
           >
             Zandar
@@ -131,7 +134,7 @@ const AboutPage = () => {
         </div>
 
         {/* FOOTER */}
-        <div className={`pt-8 border-t text-center transition-colors duration-300 ${theme.divider}`}>
+        <div className={`p-8 border-t text-center transition-colors duration-300 ${theme.divider}`}>
             <p className={`text-xs font-medium transition-colors duration-300 ${theme.textSub}`}>
                 Designed for Focus. Crafted by Yadnesh.
             </p>
