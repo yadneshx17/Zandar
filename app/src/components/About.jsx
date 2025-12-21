@@ -11,7 +11,7 @@ import {
   Sun,
 } from "lucide-react";
 
-const AboutPage = ({ cardDismissal, setCardDismissal, started }) => {
+const AboutPage = ({ setCardDismissal, started }) => {
   // 1. STATE: Default to Dark Mode (true)
   const [isDarkMode, setIsDarkMode] = useState(true);
 

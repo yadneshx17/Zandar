@@ -1,5 +1,40 @@
 @import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
 
+@keyframes previewReveal {
+  0% {
+    mask-image: linear-gradient(
+      to bottom,
+      rgba(0,0,0,0) 0%,
+      rgba(0,0,0,0) 30%,
+      rgba(0,0,0,1) 60%,
+      rgba(0,0,0,1) 100%
+    );
+  }
+  100% {
+    mask-image: linear-gradient(
+      to bottom,
+      rgba(0,0,0,1) 0%,
+      rgba(0,0,0,1) 100%
+    );
+  }
+}
+
+@keyframes previewFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(1.1);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1.05);
+  }
+}
+
+
+.animate-previewReveal {
+  animation: previewReveal 0.6s ease-out forwards;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

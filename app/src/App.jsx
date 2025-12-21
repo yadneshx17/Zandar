@@ -14,6 +14,8 @@ function App() {
   const [activePage, setActivePage] = useState("");
   const [presetId, setPresetId] = useState("");
   const [started, setStarted] = useState(false);
+  const [previewPreset, setPreviewPreset] = useState(null);
+
 
   // Initialize cardDismissal from localStorage
   const [cardDismissal, setCardDismissal] = useState(() => {
@@ -30,30 +32,16 @@ function App() {
   }, [started]);
 
   return (
-    <>
+    <> 
       <SettingsProvider>
-        {!cardDismissal && (
-          <div className="fixed inset-0 z-50">
-            <OnBoardingCard
-              cardDismissal={cardDismissal}
-              setCardDismissal={setCardDismissal}
-              setStarted={setStarted}
-              setPresetId={setPresetId}
-            />
-          </div>
-        )}
-        <div
-          className="relative w-screen h-screen overflow-hidden text-gray-200 font-sans selection:bg-purple-500/30"
-
-          // className={`relative w-screen h-screen overflow-hidden text-gray-200 font-sans selection:bg-purple-500/30 ${
-          //   cardDismissal
-          //     ? "animate-fade-in"
-          //     : "opacity-0 pointer-events-none"
-          // }`}
-        >
-          <BackgroundWrapper />
+        <div className="relative w-screen h-screen overflow-hidden text-gray-200 font-sans selection:bg-purple-500/30">
+      
+          {/* Background */}
+          <BackgroundWrapper previewPreset={previewPreset} />
+      
+          {/* MAIN APP LAYER */}
           <div
-            className="relative z-10 flex flex-col h-full min-h-0"
+            className="relative z-10 flex flex-col h-full min-h-0 transition-all duration-300 ease-out"
             style={
               presetId === "glass" || presetId === "gradient"
                 ? {
@@ -63,17 +51,26 @@ function App() {
                 : undefined
             }
           >
-            {/* <Navbar activeTab={activePage} setActiveTab={setActivePage} />*/}
             <Routes>
               <Route
                 path="/"
                 element={
-                  <Dashboard
-                    activePage={activePage}
-                    setActivePage={setActivePage}
-                  />
+                  <div
+                    className={`
+                      absolute inset-0 transition-all duration-300 ease-out
+                      ${cardDismissal
+                        ? "opacity-100 translate-y-0"
+                        : "opacity-0 translate-y-2 pointer-events-none"}
+                    `}
+                  >
+                    <Dashboard
+                      activePage={activePage}
+                      setActivePage={setActivePage}
+                    />
+                  </div>
                 }
               />
+      
               <Route
                 path="/about"
                 element={
@@ -86,12 +83,33 @@ function App() {
               />
             </Routes>
           </div>
+      
+          {/* ONBOARDING OVERLAY */}
+          <div
+            className={`
+              fixed inset-0 z-50 transition-all duration-300 ease-out
+              ${cardDismissal
+                ? "opacity-0 scale-[0.98] pointer-events-none"
+                : "opacity-100 scale-100"}
+            `}
+          >
+            <OnBoardingCard
+              cardDismissal={cardDismissal}
+              setCardDismissal={setCardDismissal}
+              setStarted={setStarted}
+              setPresetId={setPresetId}
+              setPreviewPreset={setPreviewPreset}
+            />
+          </div>
+      
+          {/* SETTINGS */}
           <SettingsPanel
             setPresetId={setPresetId}
             setCardDismissal={setCardDismissal}
           />
         </div>
       </SettingsProvider>
+
     </>
   );
 }

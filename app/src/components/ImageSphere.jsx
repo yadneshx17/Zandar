@@ -63,9 +63,10 @@ const BG_PRESETS = [
   },
 ];
 
-const ImageSpheres = ({setPresetId}) => {
+const ImageSpheres = ({setPresetId, setPreviewPreset}) => {
   // State to track which sphere index is currently hovered
   const [hoveredIndex, setHoveredIndex] = useState(null);
+  const [selectedPreset, setSelectedPreset] = useState(null);
 
   const {
     setBgType,
@@ -94,7 +95,7 @@ const ImageSpheres = ({setPresetId}) => {
   return (
     // Container: Using gap-4 here handles the base spacing
     <div 
-      className="flex items-center justify-center gap-4 py-8 h-32"
+      className="flex items-center justify-center gap-4 py-8 h-32 select-none"
       onMouseLeave={() => setHoveredIndex(null)}
     >
       
@@ -136,13 +137,26 @@ const ImageSpheres = ({setPresetId}) => {
         }
 
         return (
+          
             <div
               key={preset.id}
               // Set hover state on enter
-              onMouseEnter={() => setHoveredIndex(index)}
-              onClick={() => applyPreset(preset.id)}
+              onMouseEnter={() => {
+                setHoveredIndex(index);
+                setPreviewPreset(preset);
+                console.log("Enter")
+              }}
+              onMouseLeave={() => {
+                setHoveredIndex(null);
+                setPreviewPreset(null);
+                console.log("Leave")
+              }}
+            onClick={() => {
+              applyPreset(preset.id)
+              setSelectedPreset(preset.id)
+            }}
               // Combine standardized size with dynamic transform classes
-              className={`relative rounded-full overflow-hidden cursor-pointer ${standardSize} ${transformClass} ${zIndexClass} ${shadowClass} 
+              className={`relative rounded-full overflow-hidden cursor-pointer ${standardSize} ${transformClass} ${zIndexClass} ${shadowClass} ${selectedPreset === preset.id ? "border-4 border-green-500 shadow-lime-100" : ""}
                           transition-all duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1.0)] origin-bottom active:scale-95`}
             >
               {/* Render content */}

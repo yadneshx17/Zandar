@@ -3,21 +3,22 @@ import { X, MoveRight, Github } from "lucide-react";
 import { Navigate, useNavigate } from "react-router-dom";
 import ImageSpheres from "./ImageSphere";
 
-const OnBoardingCard = ({ cardDismissal, setCardDismissal, setStarted , setPresetId}) => {
+const OnBoardingCard = ({ cardDismissal, setCardDismissal, setStarted , setPresetId, setPreviewPreset}) => {
   const navigate = useNavigate();
 
   return (
     // Outer Background (Dark Overlay)
-    <div className="min-h-screen w-full bg-[#5E5E5E] flex items-center justify-center p-4">
-      {/* The Main Card */}
+    <div className="relative min-h-screen w-full flex items-center justify-center p-4 overflow-hidden">      {/* The Main Card */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/40 to-black/20 backdrop-blur-sm" />
       <div
         className="
           relative w-full max-w-[1200px]
           min-h-[85vh] md:min-h-0
           md:aspect-[16/10]
           bg-[#D1C8C8] rounded-[20px]
-          shadow-2xl flex flex-col
+          flex flex-col
           p-6 md:p-12
+          shadow-[0_4px_10pxlocal_rgba(255,255,255,0.4)]
         "
       >
         {/* --- Header Section --- */}
@@ -66,7 +67,7 @@ const OnBoardingCard = ({ cardDismissal, setCardDismissal, setStarted , setPrese
           <div
             onClick={() => {
               setCardDismissal(true);
-              navigate("/");
+              // navigate("/");
               setStarted(true);
             }}
             className="mt-12 bg-black p-1.5 pl-1.5 pr-6 rounded-full inline-flex items-center gap-4 active:scale-95 cursor-pointer hover:scale-105 hover:shadow-[0_2px_10px_rgba(0,0,0,0.4)] transition-transform duration-300 -translate-y-12 md:-translate-y-0"
@@ -88,7 +89,7 @@ const OnBoardingCard = ({ cardDismissal, setCardDismissal, setStarted , setPrese
         </div>
         
         <div>
-          <ImageSpheres setPresetId={setPresetId}  />
+          <ImageSpheres setPresetId={setPresetId} setPreviewPreset={setPreviewPreset} />
         </div>
 
         {/* --- Footer Section --- */}
@@ -113,13 +114,13 @@ const OnBoardingCard = ({ cardDismissal, setCardDismissal, setStarted , setPrese
           {/* Centered "about" text */}
           {/* absolute left-1/2 */}
           <button
-            className="-translate-x-1/2 translate-y-2 bottom-0 mt-2 hover:scale-95 active:scale-90 transition-transform duration-300"
+            className="-translate-x-1/2 translate-y-2 bottom-0 mt-2 hover:scale-95 active:scale-90 transition-transform duration-300 bg-black/80 px-2 rounded-lg"
             onClick={() => {
               navigate("/about");
               setCardDismissal(!cardDismissal);
             }}
           >
-            <span className="font-serif text-black/80 text-[24px] font-bold ease-in cursor-pointer animate-pulse">
+            <span className="font-serif text-white text-[24px] font-bold ease-in cursor-pointer animate-pulse">
               about
             </span>
           </button>

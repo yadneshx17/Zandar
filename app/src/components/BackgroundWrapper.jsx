@@ -2,7 +2,7 @@ import React, { useEffect, useContext, useState } from "react";
 import { SettingsContext } from "../contexts/SettingsProvider";
 import { getImageBlob } from "../services/db/imageStore";
 
-const BackgroundWrapper = () => {
+const BackgroundWrapper = ({ previewPreset }) => {
   const {
     bgType,
     setBgType,
@@ -23,6 +23,10 @@ const BackgroundWrapper = () => {
     vibrant: "/assets/backgrounds/blur.jpg",
     game: "/assets/backgrounds/game.jpg",
   };
+
+  useEffect(() => {
+    console.log("previewPreset:", previewPreset);
+  }, [previewPreset]);
 
   useEffect(() => {
     const storedType = localStorage.getItem("bgType");
@@ -83,7 +87,26 @@ const BackgroundWrapper = () => {
           )}
         </>
       )}
-      <div className="absolute inset-0 bg-black/20 pointer-events-none" />
+
+      {previewPreset && (
+        <div className="absolute inset-0 pointer-events-none z-20">
+          <div
+            className="
+              absolute inset-0 bg-cover bg-center
+              transition-all duration-500 ease-out
+              opacity-100
+              translate-y-0
+              blur-[14px]
+              scale-105
+            "
+            style={{
+              backgroundImage: `url(${previewPreset.bg})`,
+              animation: "previewFadeIn 0.5s ease-out forwards",
+            }}
+          />
+        </div>
+      )}
+      {/* <div className="absolute inset-0 bg-black/20 pointer-events-none" />*/}
     </div>
   );
 };
