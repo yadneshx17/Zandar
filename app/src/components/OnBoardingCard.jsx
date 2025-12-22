@@ -3,12 +3,20 @@ import { X, MoveRight, Github } from "lucide-react";
 import { Navigate, useNavigate } from "react-router-dom";
 import ImageSpheres from "./ImageSphere";
 
-const OnBoardingCard = ({ cardDismissal, setCardDismissal, setStarted , setPresetId, setPreviewPreset}) => {
+const OnBoardingCard = ({
+  cardDismissal,
+  setCardDismissal,
+  setStarted,
+  setPresetId,
+  setPreviewPreset,
+}) => {
   const navigate = useNavigate();
 
   return (
     // Outer Background (Dark Overlay)
-    <div className="relative min-h-screen w-full flex items-center justify-center p-4 overflow-hidden">      {/* The Main Card */}
+    <div className="relative min-h-screen w-full flex items-center justify-center p-4 overflow-hidden">
+      {" "}
+      {/* The Main Card */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/40 to-black/20 backdrop-blur-sm" />
       <div
         className="
@@ -58,9 +66,9 @@ const OnBoardingCard = ({ cardDismissal, setCardDismissal, setStarted , setPrese
         {/* --- Main Content Section --- */}
         <div className="flex-1 flex flex-col items-center justify-center ">
           {/* Description Text - Serif Font */}
-          <p className="font-serif text-black/90 md:text-2xl text-xl text-center -translate-y-16 max-w-2xl leading-snug tracking-wide">
-            Local • Privacy-first • Customizable <br />
-            browser startpage
+          <p className="font-serif text-black/90 md:text-[25px] text-xl text-center -translate-y-12 max-w-2xl leading-snug tracking-wide">
+            A better new tab for focus and productivity
+            <p className="mt-1 md:text-[22px]">Organize Links • tools • Information</p>
           </p>
 
           {/* The Unique "Split-Pill" Button */}
@@ -87,9 +95,12 @@ const OnBoardingCard = ({ cardDismissal, setCardDismissal, setStarted , setPrese
             <MoveRight className="text-white" size={30} strokeWidth={1.5} />
           </div>
         </div>
-        
+
         <div>
-          <ImageSpheres setPresetId={setPresetId} setPreviewPreset={setPreviewPreset} />
+          <ImageSpheres
+            setPresetId={setPresetId}
+            setPreviewPreset={setPreviewPreset}
+          />
         </div>
 
         {/* --- Footer Section --- */}
@@ -109,7 +120,9 @@ const OnBoardingCard = ({ cardDismissal, setCardDismissal, setStarted , setPrese
             />
           </a>
 
-          <p className="text-xs font-instrument translate-y-5 text-slate-900 select-none">Customize anytime from Settings</p>
+          <p className="text-xs font-instrument translate-y-5 text-slate-900 select-none">
+            Customize anytime from Settings
+          </p>
 
           {/* Centered "about" text */}
           {/* absolute left-1/2 */}

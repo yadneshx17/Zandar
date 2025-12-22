@@ -34,6 +34,7 @@ const SettingsPanel = ({ setPresetId, setCardDismissal }) => {
     setBgPreset,
   } = useContext(SettingsContext);
 
+  
   const BG_PRESETS = [
     {
       id: "glass",
@@ -41,9 +42,9 @@ const SettingsPanel = ({ setPresetId, setCardDismissal }) => {
       type: "preset",
       bg: "/assets/backgrounds/glass.jpg",
       defaults: {
-        blur: 12,
-        brightness: 110,
-        widgetOpacity: 0,
+        blur: 20,
+        brightness: 100,
+        widgetOpacity: 20,
       },
     },
     {
@@ -52,20 +53,20 @@ const SettingsPanel = ({ setPresetId, setCardDismissal }) => {
       type: "preset",
       bg: "/assets/backgrounds/nature.jpg",
       defaults: {
-        blur: 40,
-        brightness: 120,
-        widgetOpacity: 0,
+        blur: 14,
+        brightness: 92,
+        widgetOpacity: 34,
       },
     },
     {
-      id: "gradient",
-      label: "Gradient",
+      id: "abstract",
+      label: "Abstract",
       type: "preset",
       bg: "/assets/backgrounds/gradient.jpg",
       defaults: {
-        blur: 0,
+        blur: 11,
         brightness: 100,
-        widgetOpacity: 0,
+        widgetOpacity: 20,
       },
     },
     {
@@ -74,9 +75,9 @@ const SettingsPanel = ({ setPresetId, setCardDismissal }) => {
       type: "preset",
       bg: "/assets/backgrounds/blur.jpg",
       defaults: {
-        blur: 6,
-        brightness: 105,
-        widgetOpacity: 0,
+        blur: 4,
+        brightness: 87,
+        widgetOpacity: 20,
       },
     },
     {
@@ -87,7 +88,7 @@ const SettingsPanel = ({ setPresetId, setCardDismissal }) => {
       defaults: {
         blur: 18,
         brightness: 100,
-        widgetOpacity: 0,
+        widgetOpacity: 26,
       },
     },
   ];

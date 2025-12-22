@@ -111,11 +111,9 @@ const AboutPage = ({ setCardDismissal, started }) => {
           <p
             className={`text-2xl font-serif max-w-[1000px] mx-auto transition-colors duration-300 ${theme.textSub}`}
           >
-            Zandar is a customizable, local & privacy-first browser startpage
-            designed to replace boring homepages with a clean and productive
-            dashboard.
+            Zandar is a customizable, local & privacy-first browser startpage built to replace your boring new tab with a focused, productive workspace.
           </p>
-
+          
           {/* Action Buttons Row */}
           <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
             <ActionButton
