@@ -43,7 +43,7 @@ const BG_PRESETS = [
     id: "vibrant",
     label: "Vibrant",
     type: "preset",
-    bg: "/assets/backgrounds/blur.jpg",
+    bg: "/assets/backgrounds/vibrant.jpg",
     defaults: {
       blur: 4,
       brightness: 87,

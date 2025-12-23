@@ -20,7 +20,7 @@ const BackgroundWrapper = ({ previewPreset }) => {
     glass: "/assets/backgrounds/glass.jpg",
     nature: "/assets/backgrounds/nature.jpg",
     gradient: "/assets/backgrounds/gradient.jpg",
-    vibrant: "/assets/backgrounds/blur.jpg",
+    vibrant: "/assets/backgrounds/vibrant.jpg",
     game: "/assets/backgrounds/game.jpg",
   };
 
