@@ -45,9 +45,9 @@ const BG_PRESETS = [
     type: "preset",
     bg: "/assets/backgrounds/vibrant.jpg",
     defaults: {
-      blur: 4,
-      brightness: 87,
-      widgetOpacity: 20,
+      blur: 18,
+      brightness: 100,
+      widgetOpacity: 36,
     },
   },
   {
