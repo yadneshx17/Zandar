@@ -67,8 +67,8 @@ const OnBoardingCard = ({
         <div className="flex-1 flex flex-col items-center justify-center ">
           {/* Description Text - Serif Font */}
           <p className="font-serif text-black/90 md:text-[25px] text-xl text-center -translate-y-12 max-w-2xl leading-snug tracking-wide">
-            A better new tab for focus and productivity
-            <p className="mt-1 md:text-[22px]">Organize Links • tools • Information</p>
+            A better new tab for focus and productivity<br />
+            <span className="mt-1 md:text-[22px]">Organize Links • tools • Information</span>
           </p>
 
           {/* The Unique "Split-Pill" Button */}
