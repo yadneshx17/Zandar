@@ -9,7 +9,7 @@ import {
   Edit3,
 } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
-import { db } from "../services/db/schema.js";
+import { db } from "../core/db/schema.js";
 import { SettingsContext } from "../contexts/SettingsProvider.jsx";
 import LinkPreview from "./LinkPreview.jsx";
 

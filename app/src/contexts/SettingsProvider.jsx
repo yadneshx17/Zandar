@@ -1,5 +1,5 @@
-import React, { createContext, useState, useEffect, useRef } from "react";
-import { saveImage } from "../services/db/imageStore.js";
+import React, { createContext, useState, useEffect } from "react";
+import { saveImage } from "../core/db/imageStore.js";
 
 export const SettingsContext = createContext();
 

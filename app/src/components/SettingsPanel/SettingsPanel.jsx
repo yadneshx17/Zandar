@@ -2,7 +2,7 @@ import React, { useEffect, useContext, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import SearchBar from "../SearchBar";
 import BackupManager from "./BackupManager.jsx";
-import { db } from "../../services/db/schema.js";
+import { db } from "../../core/db/schema.js";
 import { SettingsContext } from "../../contexts/SettingsProvider";
 import { Broom } from "@phosphor-icons/react";
 import { X, Database, Images, Upload, Check, Command, Moon, Sun } from "lucide-react";
@@ -11,7 +11,6 @@ const PANEL_WIDTH_MOBILE = "100vw";
 const PANEL_WIDTH_DESKTOP = "360px";
 
 const SettingsPanel = ({ setPresetId, setCardDismissal }) => {
-  // const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
   const fileInputRef = useRef(null);

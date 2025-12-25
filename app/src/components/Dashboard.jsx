@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useContext } from "react";
 import { Plus } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 import { useLiveQuery } from "dexie-react-hooks";
-import { db } from "../services/db/schema.js";
+import { db } from "../core/db/schema.js";
 import Widget from "./Widgets";
 import { SettingsContext } from "../contexts/SettingsProvider";
 import NavBar from "./Navbar.jsx";

@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { Download, Upload, Database, AlertCircle, CheckCircle } from "lucide-react";
-import { exportDatabase, importDatabase, getDatabaseStats } from "../../services/db/backup";
+import { exportDatabase, importDatabase, getDatabaseStats } from "../../core/db/backup";
 
 const BackupManager = () => {
   const [isExporting, setIsExporting] = useState(false);

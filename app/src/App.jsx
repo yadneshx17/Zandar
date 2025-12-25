@@ -2,8 +2,6 @@ import { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 
 import Dashboard from "./components/Dashboard";
-import Navbar from "./components/Navbar";
-import QuickAccess from "./components/QuickAccess";
 import { SettingsProvider } from "./contexts/SettingsProvider";
 import BackgroundWrapper from "./components/BackgroundWrapper";
 import SettingsPanel from "./components/SettingsPanel/SettingsPanel";
@@ -109,7 +107,6 @@ function App() {
           />
         </div>
       </SettingsProvider>
-
     </>
   );
 }

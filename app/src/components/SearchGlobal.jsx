@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import { Search, X } from "lucide-react";
-import { db } from "../services/db/schema.js";
+import { db } from "../core/db/schema.js";
 import { useLiveQuery } from "dexie-react-hooks";
 import { Command } from "lucide-react";
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useContext, useState } from "react";
 import { SettingsContext } from "../contexts/SettingsProvider";
-import { getImageBlob } from "../services/db/imageStore";
+import { getImageBlob } from "../core/db/imageStore.js";
 
 const BackgroundWrapper = ({ previewPreset }) => {
   const {

@@ -10,7 +10,7 @@ import {
   Command,
 } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
-import { db } from "../services/db/schema.js";
+import { db } from "../core/db/schema.js";
 import { useLiveQuery } from "dexie-react-hooks";
 import SettingsPanel from "./SettingsPanel/SettingsPanel";
 import { SettingsContext } from "../contexts/SettingsProvider";
