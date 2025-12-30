@@ -1,67 +1,10 @@
 import React, { useState, useContext } from 'react';
 import { SettingsContext } from '../contexts/SettingsProvider';
 import { Settings } from 'lucide-react';
+import { BG_PRESETS } from "../utils/backgroundPresets";
 
 // Data defining the 5 spheres.
 const standardSize = 'w-16 h-16 md:w-20 md:h-20';
-
-const BG_PRESETS = [
-  {
-    id: "glass",
-    label: "Glass",
-    type: "preset",
-    bg: "/assets/backgrounds/glass.jpg",
-    defaults: {
-      blur: 20,
-      brightness: 100,
-      widgetOpacity: 20,
-    },
-  },
-  {
-    id: "nature",
-    label: "Nature",
-    type: "preset",
-    bg: "/assets/backgrounds/nature.jpg",
-    defaults: {
-      blur: 14,
-      brightness: 92,
-      widgetOpacity: 34,
-    },
-  },
-  {
-    id: "abstract",
-    label: "Abstract",
-    type: "preset",
-    bg: "/assets/backgrounds/gradient.jpg",
-    defaults: {
-      blur: 11,
-      brightness: 100,
-      widgetOpacity: 20,
-    },
-  },
-  {
-    id: "vibrant",
-    label: "Vibrant",
-    type: "preset",
-    bg: "/assets/backgrounds/vibrant.jpg",
-    defaults: {
-      blur: 18,
-      brightness: 100,
-      widgetOpacity: 36,
-    },
-  },
-  {
-    id: "game",
-    label: "Game",
-    type: "preset",
-    bg: "/assets/backgrounds/game.jpg",
-    defaults: {
-      blur: 18,
-      brightness: 100,
-      widgetOpacity: 26,
-    },
-  },
-];
 
 const ImageSpheres = ({setPresetId, setPreviewPreset}) => {
   // State to track which sphere index is currently hovered
