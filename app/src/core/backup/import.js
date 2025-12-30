@@ -1,5 +1,5 @@
-import { db } from "../schema";
-import { BACKUP_VERSION, FILE_PREFIX, DATE_FORMAT_OPTIONS } from "../../../constants/backup";
+import { db } from "../db/schema";
+import { BACKUP_VERSION, FILE_PREFIX, DATE_FORMAT_OPTIONS } from "../../constants/backup";
 
 // Validate backup file structure
 const validateBackupStructure = (backup) => {

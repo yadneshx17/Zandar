@@ -37,7 +37,8 @@ export class ZandarDB extends Dexie {
   pages!: Table<Page, number>;
   widgets!: Table<Widget, number>;
   links!: Table<Link, number>;
-
+  image!: Table<Blob, string>;
+  
   constructor() {
     super("ZandarDB");
 
