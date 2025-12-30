@@ -4,13 +4,29 @@ interface Backgrounddefaults {
   widgetOpacity: number;
 }
 
-export interface BackgroundPreset {
+interface BackgroundPreset {
   id: string;
   label: string;
   type: "preset" | "custom";
   bg: string;
   defaults: Backgrounddefaults;
 }
+
+interface Preset {
+  glass: string;
+  nature: string;
+  "abstract": string;  // wrapped in quotes. abstract is TS keyword
+  vibrant: string;
+  game: string;
+}
+
+export const PRESET_IMAGES: Preset = {
+  glass: "/assets/backgrounds/glass.jpg",
+  nature: "/assets/backgrounds/nature.jpg",
+  abstract: "/assets/backgrounds/abstract.jpg",
+  vibrant: "/assets/backgrounds/vibrant.jpg",
+  game: "/assets/backgrounds/game.jpg",
+};
 
 export const BG_PRESETS: ReadonlyArray<BackgroundPreset> = [
   {

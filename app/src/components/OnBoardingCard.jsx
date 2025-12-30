@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { X, MoveRight, Github } from "lucide-react";
 import { Navigate, useNavigate } from "react-router-dom";
 import ImageSpheres from "./ImageSphere";

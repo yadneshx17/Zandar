@@ -1,6 +1,7 @@
 import React, { useEffect, useContext, useState } from "react";
 import { SettingsContext } from "../contexts/SettingsProvider";
 import { getImageBlob } from "../core/db/imageStore.js";
+import { PRESET_IMAGES } from "../constants/presets"
 
 const BackgroundWrapper = ({ previewPreset }) => {
   const {
@@ -15,14 +16,6 @@ const BackgroundWrapper = ({ previewPreset }) => {
     bgPreset,
   } = useContext(SettingsContext);
   const [isVideo, setIsVideo] = useState(false);
-
-  const PRESET_IMAGES = {
-    glass: "/assets/backgrounds/glass.jpg",
-    nature: "/assets/backgrounds/nature.jpg",
-    abstract: "/assets/backgrounds/abstract.jpg",
-    vibrant: "/assets/backgrounds/vibrant.jpg",
-    game: "/assets/backgrounds/game.jpg",
-  };
 
   useEffect(() => {
     console.log("previewPreset:", previewPreset);

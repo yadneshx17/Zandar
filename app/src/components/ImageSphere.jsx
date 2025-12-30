@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { SettingsContext } from '../contexts/SettingsProvider';
 import { Settings } from 'lucide-react';
-import { BG_PRESETS } from "../utils/backgroundPresets";
+import { BG_PRESETS } from "../constants/presets";
 
 // Data defining the 5 spheres.
 const standardSize = 'w-16 h-16 md:w-20 md:h-20';
@@ -18,7 +18,6 @@ const ImageSpheres = ({setPresetId, setPreviewPreset}) => {
     setWidgetOpacity,
     setBgPreset,
   } = useContext(SettingsContext);
-  
   
   const applyPreset = (presetId) => {
     const preset = BG_PRESETS.find((p) => p.id === presetId);

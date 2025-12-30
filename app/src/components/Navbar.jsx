@@ -22,7 +22,6 @@ export default function NavBar({ activeTab, setActiveTab }) {
   const [pages, setPages] = useState([]);
   const [draggedPage, setDraggedPage] = useState(null);
   const [dragOverIndex, setDragOverIndex] = useState(null);
-  const [isMouseDown, setIsMouseDown] = useState(null);
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -32,7 +31,7 @@ export default function NavBar({ activeTab, setActiveTab }) {
   const [editingPageTitleById, setEditingPageTitleById] = useState(null);
   // const [settingsOpen, setSettingsOpen] = useState(false);
 
-  const { widgetOpacity, settingsOpen, setSettingsOpen, bgType } =
+  const { widgetOpacity, settingsOpen, setSettingsOpen } =
     useContext(SettingsContext);
 
   const now = () => new Date().toISOString();

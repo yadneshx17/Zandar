@@ -6,10 +6,8 @@ import { db } from "../../core/db/schema.js";
 import { SettingsContext } from "../../contexts/SettingsProvider";
 import { Broom } from "@phosphor-icons/react";
 import { X, Database, Images, Upload, Check, Command, Moon, Sun } from "lucide-react";
-import { BG_PRESETS } from "../../utils/backgroundPresets";
+import { BG_PRESETS } from "../../constants/presets";
 
-const PANEL_WIDTH_MOBILE = "100vw";
-const PANEL_WIDTH_DESKTOP = "360px";
 
 const SettingsPanel = ({ setPresetId, setCardDismissal }) => {
   const navigate = useNavigate();
