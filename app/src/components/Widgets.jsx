@@ -12,7 +12,7 @@ import { v4 as uuidv4 } from "uuid";
 import { db } from "../core/db/db";
 import { SettingsContext } from "../contexts/SettingsProvider.jsx";
 import LinkPreview from "./LinkPreview.jsx";
-import { getPrimaryFavicon, getGoogleFavicon } from "../utils/favicontjs";
+import { getPrimaryFavicon, getGoogleFavicon } from "../utils/favicon.ts";
 
 const Widget = ({ widget, widgets, setWidgets }) => {
   const [showAddLink, setShowAddLink] = useState(false);

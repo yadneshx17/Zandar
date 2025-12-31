@@ -1,5 +1,5 @@
   import React from "react";
-  import { getPrimaryFavicon, getGoogleFavicon } from "../utils/favicontjs";
+  import { getPrimaryFavicon, getGoogleFavicon } from "../utils/favicon.ts";
   
   const LinkPreview = ({ title, url, isVisible, onClick }) => {
     if (!isVisible) {

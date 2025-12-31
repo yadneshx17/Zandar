@@ -3,7 +3,7 @@ import { Search, X } from "lucide-react";
 import { db } from "../core/db/db";
 import { useLiveQuery } from "dexie-react-hooks";
 import { Command } from "lucide-react";
-import { getPrimaryFavicon, getGoogleFavicon } from "../utils/favicontjs";
+import { getPrimaryFavicon, getGoogleFavicon } from "../utils/favicon.ts";
 
 export default function SearchGlobal({ setSearchOpen }) {
   const inputRef = useRef(null);
