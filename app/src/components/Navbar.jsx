@@ -16,6 +16,8 @@ import SettingsPanel from "./SettingsPanel/SettingsPanel";
 import { SettingsContext } from "../contexts/SettingsProvider";
 import SearchGlobal from "./SearchGlobal.jsx";
 import { CommandIcon } from "@phosphor-icons/react";
+import PageDeleteConfirm from "./PageDeleteConfirm";
+import { updatePageTitle, deletePage, addPage } from "../core/db/page";
 
 export default function NavBar({ activeTab, setActiveTab }) {
   const dbPages = useLiveQuery(() => db.pages.toArray(), []);
@@ -29,7 +31,6 @@ export default function NavBar({ activeTab, setActiveTab }) {
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [newPage, setNewPage] = useState({ title: "" });
   const [editingPageTitleById, setEditingPageTitleById] = useState(null);
-  // const [settingsOpen, setSettingsOpen] = useState(false);
 
   const { widgetOpacity, settingsOpen, setSettingsOpen } =
     useContext(SettingsContext);
@@ -46,40 +47,21 @@ export default function NavBar({ activeTab, setActiveTab }) {
     }
   }, [dbPages, activeTab, setActiveTab]);
 
-  const updatePageTitle = async (pageId, Title) => {
-    const trimmedTitle = Title.trim();
-    const finalTitle = trimmedTitle === "" ? "New Page" : trimmedTitle;
-
+  const handlePageTitleSave = async (pageId, Title) => {
     try {
-      await db.pages.update(pageId, {
-        title: finalTitle,
-        updatedAt: now(),
-      });
-    } catch (error) {
-      alert("Error: Failed to update page title", error);
+      await updatePageTitle(pageId, Title);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to update page title");
     }
   };
 
-  const handleDeletePage = async (pageToDelete) => {
+  const handleDeletePage = async (page) => {
     try {
-      const widgets = await db.widgets
-        .where({ pageId: pageToDelete.id })
-        .toArray();
-
-      for (const widget of widgets) {
-        await db.links.where({ widgetId: widget.id }).delete();
-      }
-
-      await db.widgets.where({ pageId: pageToDelete.id }).delete();
-      await db.pages.delete(pageToDelete.id);
-
-      if (activeTab === pageToDelete.uuid) {
-        const remainingPages = dbPages.filter((p) => p.id !== pageToDelete.id);
-        if (remainingPages.length > 0) {
-          setActiveTab(remainingPages[0].uuid);
-        } else {
-          setActiveTab("");
-        }
+      await deletePage(page.id);
+      if (activeTab === page.uuid) {
+        const remainingPages = dbPages.filter((p) => p.id !== page.id);
+        setActiveTab(remainingPages.length > 0 ? remainingPages[0].uuid : "");
       }
       setDeleteConfirm(null);
     } catch (error) {
@@ -92,7 +74,7 @@ export default function NavBar({ activeTab, setActiveTab }) {
     return pages.length > 0 ? Math.max(...pages.map((p) => p.order || 0)) : -1;
   };
 
-  const addPage = async () => {
+  const handleAddPage = async () => {
     if (!newPage.title.trim()) {
       alert("Please enter a page title");
       return;
@@ -102,13 +84,7 @@ export default function NavBar({ activeTab, setActiveTab }) {
     const pageUUID = uuidv4();
 
     try {
-      await db.pages.add({
-        uuid: pageUUID,
-        title: newPage.title,
-        order: maxOrder + 1,
-        createdAt: now(),
-        updatedAt: now(),
-      });
+      await addPage(newPage.title, maxOrder, pageUUID);
       setActiveTab(pageUUID);
       setNewPage({ title: "" });
       setNewPageDialog(false);
@@ -242,10 +218,10 @@ export default function NavBar({ activeTab, setActiveTab }) {
                             viewBox="0 0 24 24"
                             fill="none"
                             stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            class="lucide lucide-layers-icon lucide-layers"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="lucide lucide-layers-icon lucide-layers"
                           >
                             <path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z" />
                             <path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12" />
@@ -277,7 +253,7 @@ export default function NavBar({ activeTab, setActiveTab }) {
                           draggedPage?.index !== index;
 
                         return (
-                          <button
+                          <div
                             key={page.id}
                             draggable
                             onDragStart={(e) => handleDragStart(e, page, index)}
@@ -319,7 +295,10 @@ export default function NavBar({ activeTab, setActiveTab }) {
                                     (p) => p.id === page.id,
                                   );
                                   if (currentPage) {
-                                    updatePageTitle(page.id, currentPage.title);
+                                    handlePageTitleSave(
+                                      page.id,
+                                      currentPage.title,
+                                    );
                                   }
                                   setEditingPageTitleById(null);
                                 }}
@@ -329,7 +308,7 @@ export default function NavBar({ activeTab, setActiveTab }) {
                                       (p) => p.id === page.id,
                                     );
                                     if (currentPage) {
-                                      updatePageTitle(
+                                      handlePageTitleSave(
                                         page.id,
                                         currentPage.title,
                                       );
@@ -381,7 +360,7 @@ export default function NavBar({ activeTab, setActiveTab }) {
                                 </button>
                               </div>
                             )}
-                          </button>
+                          </div>
                         );
                       })}
                     </div>
@@ -427,7 +406,9 @@ export default function NavBar({ activeTab, setActiveTab }) {
                       ${isDropTarget && activeTab == page.uuid ? "border border-black scale-95" : ""}
                     `}
                   >
-                    <span className="w-full truncate max-w-[120px] sm:max-w-none">{page.title}</span>
+                    <span className="w-full truncate max-w-[120px] sm:max-w-none">
+                      {page.title}
+                    </span>
                   </button>
                 );
               })}
@@ -438,7 +419,6 @@ export default function NavBar({ activeTab, setActiveTab }) {
               {/* Add Page Button */}
               <button
                 onClick={() => setNewPageDialog(true)}
-                onMouseDown={() => setIsMouseDown(true)}
                 className={`
                   text-white
                   rounded-full p-2
@@ -460,7 +440,9 @@ export default function NavBar({ activeTab, setActiveTab }) {
 
           {/* Right side - Icons */}
           <div className="flex items-center gap-2 sm:gap-4 px-1 flex-shrink-0">
-            <h2 className="hidden sm:block text-xs sm:text-sm select-none">[ Beta ]</h2>
+            <h2 className="hidden sm:block text-xs sm:text-sm select-none">
+              [ Beta ]
+            </h2>
 
             <div className="flex items-center gap-1 sm:gap-2">
               {/* <button
@@ -536,7 +518,7 @@ export default function NavBar({ activeTab, setActiveTab }) {
                 autoFocus
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && newPage.title.trim()) {
-                    addPage();
+                    handleAddPage();
                   }
                 }}
                 className="w-full px-4 py-2 bg-[#0e0e0e] border border-gray-700 rounded-lg text-white outline-none focus:border-gray-500 transition-all placeholder-neutral-500"
@@ -550,7 +532,7 @@ export default function NavBar({ activeTab, setActiveTab }) {
                   Cancel
                 </button>
                 <button
-                  onClick={addPage}
+                  onClick={handleAddPage}
                   className="flex-1 px-4 py-2 bg-white text-black rounded-lg hover:bg-gray-200 transition-colors font-medium shadow-[0_3px_20px_rgba(0,0,0,0.5)]  "
                 >
                   Create
@@ -563,43 +545,11 @@ export default function NavBar({ activeTab, setActiveTab }) {
 
       {/* Delete Confirmation Modal */}
       {deleteConfirm && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4"
-          onClick={() => setDeleteConfirm(null)}
-        >
-          <div
-            className="bg-[#1a1a1a] border border-gray-700 rounded-lg shadow-2xl w-full max-w-sm p-4 sm:p-6"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="mb-4">
-              <h3 className="text-xl font-bold text-white mb-2">
-                Delete Page?
-              </h3>
-              <p className="text-gray-400 text-sm">
-                Delete "
-                <span className="font-semibold text-white">
-                  {deleteConfirm.title}
-                </span>
-                "? All widgets and links will be deleted.
-              </p>
-            </div>
-
-            <div className="flex gap-3 justify-end">
-              <button
-                onClick={() => setDeleteConfirm(null)}
-                className="px-4 py-2 border border-gray-700 rounded-lg text-gray-300 hover:bg-gray-800 transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => handleDeletePage(deleteConfirm)}
-                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-medium"
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        </div>
+        <PageDeleteConfirm
+          deleteConfirm={deleteConfirm}
+          setDeleteConfirm={setDeleteConfirm}
+          handleDeletePage={handleDeletePage}
+        />
       )}
     </>
   );

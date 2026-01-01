@@ -1,13 +1,11 @@
 import React, { useEffect, useContext, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import SearchBar from "../SearchBar";
 import BackupManager from "./BackupManager.jsx";
 import { db } from "../../core/db/db";
 import { SettingsContext } from "../../contexts/SettingsProvider";
 import { Broom } from "@phosphor-icons/react";
 import { X, Database, Images, Upload, Check, Command, Moon, Sun } from "lucide-react";
 import { BG_PRESETS } from "../../constants/presets";
-
 
 const SettingsPanel = ({ setPresetId, setCardDismissal }) => {
   const navigate = useNavigate();
@@ -109,18 +107,6 @@ const SettingsPanel = ({ setPresetId, setCardDismissal }) => {
               </button>
             </div>
           </div>
-          {/* <div className="px-4 py-2">
-            <SearchBar
-              // value={searchQuery}
-              // onChange={setSearchQuery}
-              placeholder="Search Settings"
-            />
-            {searchQuery && (
-              <div className="mt-4 text-white">
-                Searching for: {searchQuery}
-              </div>
-            )}
-          </div>*/}
         </div>
 
         {/* Content */}
