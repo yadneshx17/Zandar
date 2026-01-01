@@ -284,7 +284,7 @@ const Dashboard = ({ activePage = "c9f9bcf-2a55-4784-8a9b-637cbe8efba0", setActi
 
                     <button
                       onClick={() => addWidget(columnId)}
-                      className="flex items-center text-[#020202] justify-center select-none gap-2 px-3 rounded-xl transition-all duration-150 group-hover:text-[#767676]/75 hover:!text-white text-xs sm:text-sm"
+                      className="flex items-center text-[#020202] justify-center select-none gap-2 px-3 rounded-xl transition-all duration-150 group-hover:text-[#767676]/75 hover:!text-white text-xs sm:text-sm pb-20"
                     >
                       <Plus size={18} className="sm:w-5 sm:h-5" />
                       <span className="text-sm">Add widget</span>
@@ -292,7 +292,7 @@ const Dashboard = ({ activePage = "c9f9bcf-2a55-4784-8a9b-637cbe8efba0", setActi
                   </div>
                 );
               })}
-            </>
+            </>       
           )}
         </div>
       </div>

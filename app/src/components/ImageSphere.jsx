@@ -86,12 +86,12 @@ const ImageSpheres = ({setPresetId, setPreviewPreset}) => {
               onMouseEnter={() => {
                 setHoveredIndex(index);
                 setPreviewPreset(preset);
-                console.log("Enter")
+                // console.log("Enter")w
               }}
               onMouseLeave={() => {
                 setHoveredIndex(null);
                 setPreviewPreset(null);
-                console.log("Leave")
+                // console.log("Leave")
               }}
             onClick={() => {
               applyPreset(preset.id)
