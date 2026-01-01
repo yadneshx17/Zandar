@@ -17,13 +17,14 @@ import { SettingsContext } from "../contexts/SettingsProvider";
 import SearchGlobal from "./SearchGlobal.jsx";
 import { CommandIcon } from "@phosphor-icons/react";
 import PageDeleteConfirm from "./PageDeleteConfirm";
+import { updatePageTitle, deletePage, addPage } from "../core/db/page";
 
 export default function NavBar({ activeTab, setActiveTab }) {
   const dbPages = useLiveQuery(() => db.pages.toArray(), []);
   const [pages, setPages] = useState([]);
   const [draggedPage, setDraggedPage] = useState(null);
   const [dragOverIndex, setDragOverIndex] = useState(null);
-  
+
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [newPageDialog, setNewPageDialog] = useState(false);
@@ -46,40 +47,21 @@ export default function NavBar({ activeTab, setActiveTab }) {
     }
   }, [dbPages, activeTab, setActiveTab]);
 
-  const updatePageTitle = async (pageId, Title) => {
-    const trimmedTitle = Title.trim();
-    const finalTitle = trimmedTitle === "" ? "New Page" : trimmedTitle;
-
+  const handlePageTitleSave = async (pageId, Title) => {
     try {
-      await db.pages.update(pageId, {
-        title: finalTitle,
-        updatedAt: now(),
-      });
-    } catch (error) {
-      alert("Error: Failed to update page title", error);
+      await updatePageTitle(pageId, Title);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to update page title");
     }
   };
 
-  const handleDeletePage = async (pageToDelete) => {
+  const handleDeletePage = async (page) => {
     try {
-      const widgets = await db.widgets
-        .where({ pageId: pageToDelete.id })
-        .toArray();
-
-      for (const widget of widgets) {
-        await db.links.where({ widgetId: widget.id }).delete();
-      }
-
-      await db.widgets.where({ pageId: pageToDelete.id }).delete();
-      await db.pages.delete(pageToDelete.id);
-
-      if (activeTab === pageToDelete.uuid) {
-        const remainingPages = dbPages.filter((p) => p.id !== pageToDelete.id);
-        if (remainingPages.length > 0) {
-          setActiveTab(remainingPages[0].uuid);
-        } else {
-          setActiveTab("");
-        }
+      await deletePage(page.id);
+      if (activeTab === page.uuid) {
+        const remainingPages = dbPages.filter((p) => p.id !== page.id);
+        setActiveTab(remainingPages.length > 0 ? remainingPages[0].uuid : "");
       }
       setDeleteConfirm(null);
     } catch (error) {
@@ -92,7 +74,7 @@ export default function NavBar({ activeTab, setActiveTab }) {
     return pages.length > 0 ? Math.max(...pages.map((p) => p.order || 0)) : -1;
   };
 
-  const addPage = async () => {
+  const handleAddPage = async () => {
     if (!newPage.title.trim()) {
       alert("Please enter a page title");
       return;
@@ -102,13 +84,7 @@ export default function NavBar({ activeTab, setActiveTab }) {
     const pageUUID = uuidv4();
 
     try {
-      await db.pages.add({
-        uuid: pageUUID,
-        title: newPage.title,
-        order: maxOrder + 1,
-        createdAt: now(),
-        updatedAt: now(),
-      });
+      await addPage(newPage.title, maxOrder, pageUUID);
       setActiveTab(pageUUID);
       setNewPage({ title: "" });
       setNewPageDialog(false);
@@ -319,7 +295,10 @@ export default function NavBar({ activeTab, setActiveTab }) {
                                     (p) => p.id === page.id,
                                   );
                                   if (currentPage) {
-                                    updatePageTitle(page.id, currentPage.title);
+                                    handlePageTitleSave(
+                                      page.id,
+                                      currentPage.title,
+                                    );
                                   }
                                   setEditingPageTitleById(null);
                                 }}
@@ -329,7 +308,7 @@ export default function NavBar({ activeTab, setActiveTab }) {
                                       (p) => p.id === page.id,
                                     );
                                     if (currentPage) {
-                                      updatePageTitle(
+                                      handlePageTitleSave(
                                         page.id,
                                         currentPage.title,
                                       );
@@ -539,7 +518,7 @@ export default function NavBar({ activeTab, setActiveTab }) {
                 autoFocus
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && newPage.title.trim()) {
-                    addPage();
+                    handleAddPage();
                   }
                 }}
                 className="w-full px-4 py-2 bg-[#0e0e0e] border border-gray-700 rounded-lg text-white outline-none focus:border-gray-500 transition-all placeholder-neutral-500"
@@ -553,7 +532,7 @@ export default function NavBar({ activeTab, setActiveTab }) {
                   Cancel
                 </button>
                 <button
-                  onClick={addPage}
+                  onClick={handleAddPage}
                   className="flex-1 px-4 py-2 bg-white text-black rounded-lg hover:bg-gray-200 transition-colors font-medium shadow-[0_3px_20px_rgba(0,0,0,0.5)]  "
                 >
                   Create
