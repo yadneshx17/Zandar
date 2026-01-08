@@ -111,8 +111,69 @@ const Widget = ({ widget, widgets, setWidgets }) => {
     setNewLink({ name: "", url: "" });
     setShowAddLink(false);
   };
+  
+  const getDomain = (url) => {
+    try {
+      const safeUrl = url.startsWith("http") ? url : `https://${url}`;
+      const hostname = new URL(safeUrl).hostname;
+      return hostname.replace(/^www\./, "");
+    } catch {
+      return "";
+    }
+  };
 
+  // useEffect(() => {
+  //   if (!newLink.url) {
+  //     setFetchedTitle(false);
+  //     return;
+  //   }
+
+  //   const controller = new AbortController();
+
+  //   const timeout = setTimeout(async () => {
+  //     try {
+  //       setIsFetchingTitle(true);
+
+  //       // backend endpoint (recommended)
+  //       const res = await fetch(`${API_BASE}/api/preview`, {
+  //         method: "POST",
+  //         headers: { "Content-Type": "application/json" },
+  //         body: JSON.stringify({ url: normalizeURL(newLink.url) }),
+  //         signal: controller.signal,
+  //       });
+
+  //       const data = await res.json();
+
+  //       // only autofill if user hasn't typed name/title
+  //       if (data.title && !newLink.name) {
+  //         setNewLink((prev) => ({
+  //           ...prev,
+  //           name: data.title,
+  //         }));
+  //       }
+
+  //       // show preview as long as we have a URL and got a response
+  //       setFetchedTitle(Boolean(data.title || newLink.url));
+  //     } catch (e) {
+  //       if (e.name !== "AbortError") {
+  //         console.error("Preview error", e);
+  //       }
+  //       setFetchedTitle(false);
+  //     } finally {
+  //       setIsFetchingTitle(false);
+  //     }
+  //   }, 600); // debounce
+
+  //   return () => {
+  //     clearTimeout(timeout);
+  //     controller.abort();
+  //   };
+  // }, [newLink.url]);
+  
+  // Inside useEffect in Widgets.jsx
+  // Auto-fetch for NEW links
   useEffect(() => {
+    // 1. Exit if no URL
     if (!newLink.url) {
       setFetchedTitle(false);
       return;
@@ -123,46 +184,101 @@ const Widget = ({ widget, widgets, setWidgets }) => {
     const timeout = setTimeout(async () => {
       try {
         setIsFetchingTitle(true);
-
-        // backend endpoint (recommended)
+  
+        // 2. The Fetch Call (Restored)
         const res = await fetch(`${API_BASE}/api/preview`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ url: normalizeURL(newLink.url) }),
           signal: controller.signal,
         });
-
+  
         const data = await res.json();
-
-        // only autofill if user hasn't typed name/title
-        if (data.title && !newLink.name) {
-          setNewLink((prev) => ({
-            ...prev,
-            name: data.title,
-          }));
+  
+        // 3. The Smart Logic
+        if (data.title) {
+          setNewLink((prev) => {
+            // Re-calculate domain of the CURRENT url in state
+            const currentDomain = getDomain(prev.url);
+  
+            // Overwrite ONLY if name is empty OR matches the domain placeholder
+            if (!prev.name || prev.name === currentDomain) {
+              return { ...prev, name: data.title };
+            }
+            return prev; // User typed a custom name, keep it
+          });
         }
-
-        // show preview as long as we have a URL and got a response
-        setFetchedTitle(Boolean(data.title || newLink.url));
+  
+        setFetchedTitle(Boolean(data.title));
       } catch (e) {
-        if (e.name !== "AbortError") {
-          console.error("Preview error", e);
-        }
+        if (e.name !== "AbortError") console.error("Preview error", e);
         setFetchedTitle(false);
       } finally {
         setIsFetchingTitle(false);
       }
-    }, 600); // debounce
-
+    }, 600);
+  
     return () => {
       clearTimeout(timeout);
       controller.abort();
     };
-  }, [newLink.url]);
-
+  }, [newLink.url]); // Dependency on URL ensures this runs when input changes
+  
+  // Editing
   // Auto-fetch preview title for edited links
+  // useEffect(() => {
+  //   if (!editingLink) return;
+  //   if (!editLinkData.url) {
+  //     setEditFetchedTitle(false);
+  //     return;
+  //   }
+
+  //   const controller = new AbortController();
+
+  //   const timeout = setTimeout(async () => {
+  //     try {
+  //       setIsFetchingEditTitle(true);
+
+  //       const res = await fetch(`${API_BASE}/api/preview`, {
+  //         method: "POST",
+  //         headers: { "Content-Type": "application/json" },
+  //         body: JSON.stringify({ url: normalizeURL(editLinkData.url) }),
+  //         signal: controller.signal,
+  //       });
+
+  //       const data = await res.json();
+
+  //       // only autofill if user hasn't typed name/title
+  //       if (data.title && !editLinkData.name) {
+  //         setEditLinkData((prev) => ({
+  //           ...prev,
+  //           name: data.title,
+  //         }));
+  //       }
+
+  //       setEditFetchedTitle(Boolean(data.title || editLinkData.url));
+  //     } catch (e) {
+  //       if (e.name !== "AbortError") {
+  //         console.error("Preview error (edit)", e);
+  //       }
+  //       setEditFetchedTitle(false);
+  //     } finally {
+  //       setIsFetchingEditTitle(false);
+  //     }
+  //   }, 600);
+
+  //   return () => {
+  //     clearTimeout(timeout);
+  //     controller.abort();
+  //   };
+  // }, [editLinkData.url, editingLink]);
+
+  
+  // Auto-fetch for EDITED links
   useEffect(() => {
     if (!editingLink) return;
+    
+    // Exit if URL is cleared
     if (!editLinkData.url) {
       setEditFetchedTitle(false);
       return;
@@ -182,32 +298,34 @@ const Widget = ({ widget, widgets, setWidgets }) => {
         });
 
         const data = await res.json();
-
-        // only autofill if user hasn't typed name/title
-        if (data.title && !editLinkData.name) {
-          setEditLinkData((prev) => ({
-            ...prev,
-            name: data.title,
-          }));
+  
+        // ✅ Updated to use the same Smart Logic as above
+        if (data.title) {
+          setEditLinkData((prev) => {
+            const currentDomain = getDomain(prev.url);
+  
+            // If the title is empty OR matches the domain (placeholder), update it
+            if (!prev.name || prev.name === currentDomain) {
+              return { ...prev, name: data.title };
+            }
+            return prev;
+          });
         }
-
+  
         setEditFetchedTitle(Boolean(data.title || editLinkData.url));
       } catch (e) {
-        if (e.name !== "AbortError") {
-          console.error("Preview error (edit)", e);
-        }
+        if (e.name !== "AbortError") console.error("Preview error (edit)", e);
         setEditFetchedTitle(false);
       } finally {
         setIsFetchingEditTitle(false);
       }
     }, 600);
-
+  
     return () => {
       clearTimeout(timeout);
       controller.abort();
     };
   }, [editLinkData.url, editingLink]);
-
   
   const deleteLink = (id) =>
     showConfirmDialog("Delete Link", "This cannot be undone", () => {
@@ -382,6 +500,7 @@ const Widget = ({ widget, widgets, setWidgets }) => {
             deleteLink={deleteLink}
             widget={widget}
             widgets={widgets}
+            getDomain={getDomain}
           />
         )}
       </div>

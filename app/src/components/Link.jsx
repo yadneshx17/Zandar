@@ -39,7 +39,8 @@ export default function Link({
   setShowAddLink,
   deleteLink,
   widget,
-  widgets
+  widgets,
+  getDomain,
 }) {
   const { widgetOpacity } = useContext(SettingsContext);
   const now = () => new Date().toISOString();
@@ -286,27 +287,58 @@ export default function Link({
             style={widgetStyle}
             // onBlur={() => setShowAddLink(false)}
           >
-            <input
+            {/* <input
               placeholder="Auto-fetched title"
               className="w-full bg-[#18181b] text-white border border-gray-700 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm focus:outline-none focus:border-gray-600 placeholder-gray-600"
               value={newLink.name}
               onChange={(e) => setNewLink({ ...newLink, name: e.target.value })}
-            />
-            <input
+            />*/}
+
+            {/* <input
               placeholder="Paste a link to auto-fetch title"
               className="w-full bg-[#18181b] text-white border border-gray-700 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm focus:outline-none focus:border-gray-600 placeholder-gray-600"
               value={newLink.url}
               onChange={(e) => {
                 const urlValue = e.target.value;
                 // When changing URL, reset name so a new title can be fetched
-                setNewLink({ name: "", url: urlValue });
+                setNewLink({ name: , url: urlValue });
+                setFetchedTitle(false);
+              }}
+              autoFocus
+            />*/}
+            <input
+              placeholder="Paste a link...Title will be autofetched"
+              className="w-full bg-[#18181b] text-white border border-gray-700 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm focus:outline-none focus:border-gray-600 placeholder-gray-600" // your existing classes
+              value={newLink.url}
+              onChange={(e) => {
+                const nextUrl = e.target.value;
+
+                // Get domains to compare
+                const oldDomain = getDomain(newLink.url);
+                const nextDomain = getDomain(nextUrl);
+
+                setNewLink((prev) => {
+                  // Logic: Is the current name just a placeholder?
+                  // (i.e., is it empty OR does it equal the domain we auto-generated before?)
+                  const isPlaceholder =
+                    prev.name === "" || prev.name === oldDomain;
+
+                  return {
+                    ...prev,
+                    url: nextUrl,
+                    // If it was a placeholder, update it to the new domain immediately.
+                    // If user typed "My Custom Song", keep "My Custom Song".
+                    name: isPlaceholder ? nextDomain : prev.name,
+                  };
+                });
+
                 setFetchedTitle(false);
               }}
               autoFocus
             />
 
             {isFetchingTitle && (
-              <div className="text-sm text-gray-400">Fetching title…</div>
+              <div className="text-sm italic text-gray-300">Fetching title…</div>
             )}
 
             <div className="flex justify-between gap-2">
