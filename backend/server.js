@@ -20,17 +20,25 @@ function isTwitterX(url) {
   return url.includes("x.com") || url.includes("twitter.com");
 }
 
+function normalizeURL(url) {
+  if (!url) return "";
+  if (url.startsWith("http://") || url.startsWith("https://")) return url;
+  return `https://${url}`;
+}
+
 app.post("/api/preview", async (req, res) => {
   const { url } = req.body;
 
   if (!url) {
     return res.status(400).json({ error: "URL is required" });
   }
+  
+  const newUrl = normalizeURL(url);
 
   try {
     // Special handling for X / twitter
-    if (isTwitterX(url)) {
-      const oembedUrl = `https://publish.twitter.com/oembed?url=${encodeURIComponent(url)}`;
+    if (isTwitterX(newUrl)) {
+      const oembedUrl = `https://publish.twitter.com/oembed?url=${encodeURIComponent(newUrl)}`;
       const response = await fetch(oembedUrl);
       // console.log(response);
       const data = await response.json();
@@ -38,15 +46,15 @@ app.post("/api/preview", async (req, res) => {
 
       return res.json({
         title: `${data.author_name} | Twitter`,
-        html: data.html,  
+        html: data.html,
         type: "twitter",
       });
     }
 
-    if (isYouTube(url)) {
+    if (isYouTube(newUrl)) {
       try {
         const oembed = await fetch(
-          `https://www.youtube.com/oembed?url=${encodeURIComponent(url)}&format=json`,
+          `https://www.youtube.com/oembed?url=${encodeURIComponent(newUrl)}&format=json`,
         );
 
         if (!oembed.ok) {
@@ -61,13 +69,16 @@ app.post("/api/preview", async (req, res) => {
           thumbnail: data.thumbnail_url,
         });
       } catch (err) {
-        console.warn("YouTube oEmbed failed, falling back to HTML scrape:", err);
+        console.warn(
+          "YouTube oEmbed failed, falling back to HTML scrape:",
+          err,
+        );
         // fall through to generic handler below
       }
     }
 
     // Normal websites
-    const response = await fetch(url, {
+    const response = await fetch(newUrl, {
       timeout: 5000,
     });
     const html = await response.text();
@@ -101,6 +112,12 @@ app.post("/api/preview", async (req, res) => {
     console.error("Preview fetch failed:", err);
     res.json({ title: "Untitled" });
   }
+});
+
+app.get("/health", async (req, res) => {
+  res.json({
+    message: "Server is Working.......",
+  });
 });
 
 app.listen(PORT, () => {
