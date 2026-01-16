@@ -1,0 +1,35 @@
+name: Zandar CI
+
+# TRIGGER: When to run?
+on:
+  pull_request:
+    branches: [ "main" ]
+  push:
+    branches: [ "main" ]
+
+# JOBS: What to do?
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest  # The fresh Linux VM
+
+    # Service Container (its optional: If tests need Redis)
+    # services:
+    #   redis:
+    #     image: redis:alpine
+    #     ports:
+    #       - 6379:6379
+
+    steps:
+    # 1. Get the code
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    # 2. Run the Test Stage
+    # If this fails (Exit Code 1), the PR is blocked.
+    - name: Run Unit Tests (Docker)
+      run: docker build --target test ./backend
+
+    # 3. Verify Production Build (Dry Run)
+    # Ensures the final image can actually compile
+    - name: Verify Production Image Build
+      run: docker build --target release ./backend

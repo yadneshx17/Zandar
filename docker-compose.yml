@@ -1,0 +1,26 @@
+services:
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:3001"
+    environment:
+        - NODE_ENV=development
+        - PORT-3001
+    env_file:
+        - ./backend/.env
+    volumes:
+        - ./backend:/app
+        - /app/node_modules
+    command: npx nodemon server.js
+  
+#   cache: 
+#     image: redis:alpine
+#     volumes: 
+#         - redis_data:/data
+#     ports:
+#        - "6379:6379"
+
+# volumes:
+#   redis_data:
