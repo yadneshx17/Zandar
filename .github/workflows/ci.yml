@@ -25,7 +25,7 @@ jobs:
   push-image:
     needs: test # If tests fail, do not upload.
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/main/head' # only push from Main branch
+    if: github.ref == 'refs/heads/main' # only push from Main branch
 
     steps:
       - uses: action/checkout@v4
