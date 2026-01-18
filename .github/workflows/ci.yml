@@ -16,7 +16,7 @@ jobs:
     steps:
       # Get the Code
       - name: Checkout Code
-        uses: action/checkout@v4
+        uses: actions/checkout@v4
 
       # run the test stage
       - name: Run unit Tests
@@ -28,7 +28,7 @@ jobs:
     if: github.ref == 'refs/heads/main' # only push from Main branch
 
     steps:
-      - uses: action/checkout@v4
+      - uses: actions/checkout@v4
 
       # Login to the warehouse
       - name: Login to Docker hub
