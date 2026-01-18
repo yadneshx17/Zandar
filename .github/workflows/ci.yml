@@ -1,6 +1,7 @@
 name: Zandar CI
 
 # TRIGGER: When to run?
+# on Push to Main or Pull Request
 on:
   pull_request:
     branches: [ "main" ]
@@ -9,27 +10,40 @@ on:
 
 # JOBS: What to do?
 jobs:
-  test-and-build:
+  # 1. CI ( Security Guard )
+  test:
     runs-on: ubuntu-latest  # The fresh Linux VM
+    steps:
+      # Get the Code
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-    # Service Container (its optional: If tests need Redis)
-    # services:
-    #   redis:
-    #     image: redis:alpine
-    #     ports:
-    #       - 6379:6379
+      # run the test stage
+      - name: Run unit Tests
+        run: docker build --target test ./backend
+
+  push-image:
+    needs: test # If tests fail, do not upload.
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' # only push from Main branch
 
     steps:
-    # 1. Get the code
-    - name: Checkout Code
-      uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    # 2. Run the Test Stage
-    # If this fails (Exit Code 1), the PR is blocked.
-    - name: Run Unit Tests (Docker)
-      run: docker build --target test ./backend
-
-    # 3. Verify Production Build (Dry Run)
-    # Ensures the final image can actually compile
-    - name: Verify Production Image Build
-      run: docker build --target release ./backend
+      # Login to the warehouse
+      - name: Login to Docker hub
+        uses: docker/login-actions@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+          
+      # Build the final image and Upload it
+      - name: Buid and Push
+        uses: docker/build-push-action@v5
+        with: 
+          context: ./backend
+          target: release 
+          push: true
+          tags: | 
+              ${{ secrets.DOCKERHUB_USERNAME }}/zandar-backend:latest
+              ${{ secrets.DOCKERHUB_USERNAME }}/zandar-backend:${{ github.sha }}
