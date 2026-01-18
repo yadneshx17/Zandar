@@ -20,7 +20,7 @@ jobs:
 
       # run the test stage
       - name: Run unit Tests
-        uses: docker build --target test ./backend
+        run: docker build --target test ./backend
 
   push-image:
     needs: test # If tests fail, do not upload.
