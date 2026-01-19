@@ -101,7 +101,11 @@ const Dashboard = ({
           }
 
           // Confirm success to clear the queue
-          window.postMessage({ type: "ZANDAR_CLEAR_QUEUE" }, "*");
+          window.postMessage({ type: "ZANDAR_CLEAR_QUEUE" }, [
+            "http://localhost:5173/*",
+            "https://zandar.site/*",
+            "https://www.zandar.site/*"
+          ]);
         } catch (error) {
           console.error("Failed to Save the Link", error);
         }
@@ -113,15 +117,19 @@ const Dashboard = ({
     console.log("Zandar Dashboard ready. Pinging Bridge...");
 
     const timerId = setTimeout(() => {
-      window.postMessage({ type: "ZANDAR_APP_READY" }, "*");
+      window.postMessage({ type: "ZANDAR_APP_READY" }, [
+        "http://localhost:5173/*",
+        "https://zandar.site/*",
+        "https://www.zandar.site/*"
+      ]);
     }, 1000);
 
-    // cleanup 
+    // cleanup
     return () => {
       window.removeEventListener("message", handleBridgeMessage);
       clearTimeout(timerId);
     };
-  }, []); 
+  }, []);
 
   async function saveExtensionLink(defaultWidgetId, title, url) {
     await db.links.add({

@@ -67,7 +67,7 @@ async function checkAndSendQueue() {
       type: "ZANDAR_INGEST_LINKS",
       payload: queue,
     },
-    ["http://localhost:5173/*", "https://zandar.site/*"],
+    ["http://localhost:5173/*", "https://zandar.site/*", "https://www.zandar.site/*"],
   );
 }
 
