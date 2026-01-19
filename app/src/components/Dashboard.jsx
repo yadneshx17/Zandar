@@ -7,7 +7,10 @@ import Widget from "./Widgets";
 import { SettingsContext } from "../contexts/SettingsProvider";
 import NavBar from "./Navbar.jsx";
 
-const Dashboard = ({ activePage = "c9f9bcf-2a55-4784-8a9b-637cbe8efba0", setActivePage }) => {  
+const Dashboard = ({
+  activePage = "c9f9bcf-2a55-4784-8a9b-637cbe8efba0",
+  setActivePage,
+}) => {
   const dbPages = useLiveQuery(() => db.pages.toArray(), []);
   const dbWidgets = useLiveQuery(() => db.widgets.toArray(), []);
   const dbLinks = useLiveQuery(() => db.links.toArray(), []);
@@ -84,8 +87,56 @@ const Dashboard = ({ activePage = "c9f9bcf-2a55-4784-8a9b-637cbe8efba0", setActi
     });
   };
 
-  // DRAG & DROP HANDLERS
+  useEffect(() => {
+    const handleBridgeMessage = async (event) => {
+      if (event.source !== window) return;
 
+      if (event.data.type === "ZANDAR_INGEST_LINKS") {
+        const links = event.data.payload;
+        console.log("📥 Receiving offline links:", links);
+
+        try {
+          for (const link of links) {
+            await saveExtensionLink(1, link.title, link.url);
+          }
+
+          // Confirm success to clear the queue
+          window.postMessage({ type: "ZANDAR_CLEAR_QUEUE" }, "*");
+        } catch (error) {
+          console.error("Failed to Save the Link", error);
+        }
+      }
+    };
+
+    window.addEventListener("message", handleBridgeMessage);
+
+    console.log("Zandar Dashboard ready. Pinging Bridge...");
+
+    const timerId = setTimeout(() => {
+      window.postMessage({ type: "ZANDAR_APP_READY" }, "*");
+    }, 1000);
+
+    // cleanup 
+    return () => {
+      window.removeEventListener("message", handleBridgeMessage);
+      clearTimeout(timerId);
+    };
+  }, []); 
+
+  async function saveExtensionLink(defaultWidgetId, title, url) {
+    await db.links.add({
+      uuid: uuidv4(),
+      name: title,
+      url: url,
+      widgetId: defaultWidgetId,
+      createdAt: now(),
+      updatedAt: now(),
+    });
+
+    console.log("Saved Link in DB!");
+  }
+
+  // DRAG & DROP HANDLERS
   const handleWidgetDragStart = (e, widget) => {
     setDraggedWidget(widget);
     e.dataTransfer.effectAllowed = "move";
@@ -292,7 +343,7 @@ const Dashboard = ({ activePage = "c9f9bcf-2a55-4784-8a9b-637cbe8efba0", setActi
                   </div>
                 );
               })}
-            </>       
+            </>
           )}
         </div>
       </div>

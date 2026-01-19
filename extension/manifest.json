@@ -1,11 +1,17 @@
-  // Just a workaround for newtab override
 {
   "manifest_version": 3,
   "name": "Zandar",
   "description": "A calm, local-first startpage for your new tab",
   "version": "0.1.0",
-  "chrome_url_overrides": {
-    "newtab": "newtab.html"
+  "permissions": ["activeTab", "storage", "tabs", "scripting"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Save to Zandar"
   },
-  "permissions": []
+  "content_scripts": [
+    {
+      "matches": ["http://localhost:5173/*", "https://zandar.site/*"],
+      "js": ["content-script.js"]
+    }
+  ]
 }
