@@ -5,7 +5,7 @@
   "version": "0.1.0",
   "permissions": ["activeTab", "storage", "tabs", "scripting"],
   "action": {
-    "default_popup": "popup.html",
+    "default_popup": "/popup.html",
     "default_title": "Save to Zandar"
   },
   "content_scripts": [
