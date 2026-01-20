@@ -1,54 +1,101 @@
-// document.addEventListener("DOMContentLoaded", async () => {
-//   const tabs = await chrome.tabs.query({ url: ["http://localhost:5173/*", "https://zandar.site/*"] });
-//   if (tabs.length === 0) {
-//     document.body.innerHTML = `
-//       <div style="padding: 20px; text-align: center; color: #a1a1aa;">
-//         <p>Zandar is not open.</p>
-//         <a href="http://localhost:5173" target="_blank" style="color: white;">Open Zandar</a>
-//       </div>
-//     `;
-//     return;
-//   }
+let pages = [];
+let widgets = [];
 
-// })
+// Load pages and widgets from chrome.storage
+async function loadPagesAndWidgets() {
+  const data = await chrome.storage.local.get(['zandar_pages', 'zandar_widgets']);
+  pages = data.zandar_pages || [];
+  widgets = data.zandar_widgets || [];
+  
+  console.log("Loadedd pages:", pages);
+  console.log("Loaded widgets:", widgets);
+  
+  populatePageSelect();
+}
 
+// Populate page dropdown
+function populatePageSelect() {
+  const pageSelect = document.getElementById('pageSelect');
+  pageSelect.innerHTML = '<option value="">Select a page...</option>';
+  
+  pages.forEach(page => {
+    const option = document.createElement('option');
+    option.value = page.id;
+    option.textContent = page.name;
+    pageSelect.appendChild(option);
+  });
+}
+
+// Handle page selection change
+document.getElementById('pageSelect').addEventListener('change', (e) => {
+  const selectedPageId = e.target.value;
+  populateWidgetSelect(selectedPageId);
+});
+
+// Populate widget dropdown based on selected page
+function populateWidgetSelect(pageId) {
+  const widgetSelect = document.getElementById('widgetSelect');
+  
+  if (!pageId) {
+    widgetSelect.innerHTML = '<option value="">Select a page first</option>';
+    return;
+  }
+  
+  const pageWidgets = widgets.filter(widget => widget.pageId == pageId);
+  widgetSelect.innerHTML = '<option value="">Select a widget...</option>';
+  
+  pageWidgets.forEach(widget => {
+    const option = document.createElement('option');
+    option.value = widget.id;
+    option.textContent = widget.title;
+    widgetSelect.appendChild(option);
+  });
+}
+
+// Save link to selected widget
 document.getElementById("saveBtn").addEventListener("click", async () => {
+  const pageSelect = document.getElementById('pageSelect');
+  const widgetSelect = document.getElementById('widgetSelect');
+  const selectedPageId = pageSelect.value;
+  const selectedWidgetId = widgetSelect.value;
+  
+  if (!selectedPageId || !selectedWidgetId) {
+    // alert('Please select both a page and a widget');
+    return;
+  }
+  
   const [currentTab] = await chrome.tabs.query({
     active: true,
     currentWindow: true,
   });
-  const linkData = { url: currentTab.url, title: currentTab.title }; // link data
-
-  // data object
-  const newLink = {
-    url: linkData.url,
-    title: linkData.title,
+  
+  const linkData = {
+    url: currentTab.url,
+    title: currentTab.title,
+    pageId: selectedPageId,
+    widgetId: selectedWidgetId,
     timestamp: Date.now(),
   };
 
-  // read the queue
+  // Add to queue with page/widget info
   const data = await chrome.storage.local.get("zandar_queue");
-  const currnetQueue = data.zandar_queue || [];
-
-  // write into the queue
-  const updatedQueue = [...currnetQueue, newLink];
+  const currentQueue = data.zandar_queue || [];
+  const updatedQueue = [...currentQueue, linkData];
   await chrome.storage.local.set({ zandar_queue: updatedQueue });
 
-  // UX
-  document.getElementById("saveBtn").innerText = "Saved!";
-
-  // console.log(await chrome.storage.local.get("zandar_queue"));
-
-  // const zandarTabs = await chrome.tabs.query({ url: "http://localhost:5173/*" });
-
-  // if (zandarTabs.length > 0) {
-  //   const zandarTabId = zandarTabs[0].id;
-  //   console.log(linkData);
-  //   chrome.tabs.sendMessage(zandarTabId, {
-  //     type: "NEW_LINK_INTENT",
-  //     payload: linkData,
-  //   });
-  // } else {
-  //   chrome.tabs.create({ url: "http://localhost:5173" });
-  // }
+  // UX feedback
+  const saveBtn = document.getElementById("saveBtn");
+  const originalText = saveBtn.innerText;
+  saveBtn.innerText = "Saved!";
+  saveBtn.style.backgroundColor = "#10b981";
+  
+  setTimeout(() => {
+    saveBtn.innerText = originalText;
+    saveBtn.style.backgroundColor = "";
+  }, 1500);
+  
+  console.log("Link saved to queue:", linkData);
 });
+
+// Initialize on popup load
+document.addEventListener('DOMContentLoaded', loadPagesAndWidgets);

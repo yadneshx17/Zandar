@@ -97,51 +97,87 @@ const Dashboard = ({
 
         try {
           for (const link of links) {
-            await saveExtensionLink(1, link.title, link.url);
+            // Convert string widgetId to number and defaullt 1
+            const widgetId = link.widgetId ? parseInt(link.widgetId, 10) : 1;
+            // console.log(`💾 Saving link "${link.title}" to widget ID: ${widgetId}`);
+            await saveExtensionLink(widgetId, link.title, link.url);
           }
 
           // Confirm success to clear the queue
           window.postMessage({ type: "ZANDAR_CLEAR_QUEUE" }, [
             "http://localhost:5173/*",
             "https://zandar.site/*",
-            "https://www.zandar.site/*"
+            "https://www.zandar.site/*",
           ]);
         } catch (error) {
           console.error("Failed to Save the Link", error);
         }
       }
     };
-
     window.addEventListener("message", handleBridgeMessage);
 
     console.log("Zandar Dashboard ready. Pinging Bridge...");
-
-    const timerId = setTimeout(() => {
+    const timer = setTimeout(() => {
       window.postMessage({ type: "ZANDAR_APP_READY" }, [
         "http://localhost:5173/*",
         "https://zandar.site/*",
-        "https://www.zandar.site/*"
+        "https://www.zandar.site/*",
       ]);
     }, 1000);
 
     // cleanup
     return () => {
       window.removeEventListener("message", handleBridgeMessage);
-      clearTimeout(timerId);
+      clearTimeout(timer);
     };
   }, []);
 
-  async function saveExtensionLink(defaultWidgetId, title, url) {
-    await db.links.add({
-      uuid: uuidv4(),
-      name: title,
-      url: url,
-      widgetId: defaultWidgetId,
-      createdAt: now(),
-      updatedAt: now(),
-    });
+  // Sync pages and widgets to extension when data changes
+  useEffect(() => {
+    if (dbPages && dbWidgets && dbPages.length > 0 && dbWidgets.length > 0) {
+      const syncData = {
+        pages: dbPages.map(page => ({
+          id: page.id,
+          uuid: page.uuid,
+          name: page.title
+        })),
+        widgets: dbWidgets.map(widget => ({
+          id: widget.id,
+          uuid: widget.uuid,
+          title: widget.title,
+          pageId: widget.pageId,
+          columnId: widget.columnId
+        }))
+      };
 
-    console.log("Saved Link in DB!");
+      window.postMessage(
+        {
+          type: "ZANDAR_SYNC_STRUCTURE",
+          payload: syncData,
+        },
+        "*",
+      );
+
+      console.log("🔄 Synced structure to extension:", syncData);
+    }
+  }, [dbPages, dbWidgets]);
+
+  async function saveExtensionLink(widgetId, title, url) {
+    try {
+      await db.links.add({
+        uuid: uuidv4(),
+        name: title,
+        url: url,
+        widgetId: widgetId,
+        createdAt: now(),
+        updatedAt: now(),
+      });
+
+      console.log(`Saved link "${title}" to widget ${widgetId} in DB!`);
+    } catch (error) {
+      console.error(`Failed to save link "${title}" to widget ${widgetId}:`, error);
+      throw error;
+    }
   }
 
   // DRAG & DROP HANDLERS
